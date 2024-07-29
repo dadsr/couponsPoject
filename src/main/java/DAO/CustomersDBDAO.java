@@ -93,7 +93,7 @@ public class CustomersDBDAO implements CustomersDAO {
             String query ="DELETE FROM customers WHERE id =?;";
             PreparedStatement statement =connection.prepareStatement(query);
             statement.setInt(1, customerID);
-            if(statement.executeUpdate())
+            if(statement.execute())
                 throw new CustomerException("deleteCustomer failed");
         } catch (InterruptedException | SQLException e) {
             throw new CustomerException(e.getMessage());
