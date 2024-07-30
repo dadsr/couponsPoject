@@ -15,14 +15,16 @@ public class LoginManager {
 
 
     private LoginManager() {
+        logger.info("LoginManager");
     }
     public static LoginManager getInstance() {
+        logger.info("getInstance");
         if(instance == null)
             instance = new LoginManager();
         return instance;
     }
     public ClientFacade login (String email, String password , ClientTypeEnum clientType) throws SQLException {
-        logger.info("starting login");
+        logger.info("login");
         switch (clientType.name()){
             case "ADMINISTRATOR" :{
                 AdminFacade admin = new AdminFacade();

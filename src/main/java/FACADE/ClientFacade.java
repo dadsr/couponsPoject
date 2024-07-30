@@ -3,6 +3,9 @@ package FACADE;
 import DAO.CompaniesDBDAO;
 import DAO.CouponsDBDAO;
 import DAO.CustomersDBDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.SQLException;
 
 import static FACADE.AdminFacade.logger;
@@ -11,6 +14,7 @@ public abstract class ClientFacade {
      protected CompaniesDBDAO companiesDbDao ;
      protected  CustomersDBDAO customersDbDao;
      protected CouponsDBDAO couponsDbDao;
+    protected static final Logger logger = LogManager.getLogger();
 
      public ClientFacade() throws SQLException {
          this.companiesDbDao = new CompaniesDBDAO();

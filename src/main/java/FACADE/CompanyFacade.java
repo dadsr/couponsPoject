@@ -1,6 +1,8 @@
 package FACADE;
 
 import BEANS.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import static FACADE.AdminFacade.logger;
 
 public class CompanyFacade  extends ClientFacade {
     private int companyID;
+    protected static final Logger logger = LogManager.getLogger();
 
     public CompanyFacade() throws SQLException {
         logger.info("CompanyFacade");

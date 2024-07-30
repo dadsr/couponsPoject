@@ -1,29 +1,32 @@
 package FACADE;
 
 import BEANS.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import static FACADE.AdminFacade.logger;
 
 public class CustomerFacade extends ClientFacade {
     private int customerID;
+    protected static final Logger logger = LogManager.getLogger();
+
 
     public CustomerFacade() throws SQLException {
-        logger.info("CustomerFacade");
+        logger.info("CustomerFacade1");
     }
     public CustomerFacade(int customerID) throws SQLException {
         this.customerID = customerID;
-        logger.info("CustomerFacade");
+        logger.info("CustomerFacade2");
     }
     public int getCustomerID() {
-        logger.info("getCustomerID");
+        logger.info("getCustomerID1");
         return customerID;
     }
     public void setCustomerID(int customerID) {
         this.customerID = customerID;
-        logger.info("getCustomerID");
+        logger.info("getCustomerID2");
     }
     @Override
     public int login(String email, String password) {

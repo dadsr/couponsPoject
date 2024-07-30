@@ -1,5 +1,8 @@
 package DAO;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,6 +20,7 @@ public class ConnectionPool {
     private final String PASSWORD ="admin";
     private List<Connection> connections = new ArrayList<>(MAX_CONNECTIONS);
     private static ConnectionPool instance;
+    protected static final Logger logger = LogManager.getLogger();
 
     /**
      * Private constructor to initialize the connection pool.
@@ -25,6 +29,7 @@ public class ConnectionPool {
      * @throws SQLException if a database access error occurs
      */
     private ConnectionPool() throws SQLException {
+        logger.info("ConnectionPool");
         for (int i = 0; i <MAX_CONNECTIONS ; i++)
             connections.add(DriverManager.getConnection(URL, USER, PASSWORD));
     }
@@ -34,6 +39,7 @@ public class ConnectionPool {
      * @throws SQLException if a database access error occurs.
      */
     public static ConnectionPool getInstance() throws SQLException {
+        logger.info("getInstance");
         if(instance == null)
             instance = new ConnectionPool();
         return instance;
@@ -45,6 +51,7 @@ public class ConnectionPool {
      * @throws InterruptedException if the current thread is interrupted while waiting.
      */
     public synchronized Connection getConnection() throws InterruptedException {
+        logger.info("getConnection");
         while (connections.size()==0)
                 wait();
         Connection connection =connections.get(connections.size()-1);
@@ -56,6 +63,7 @@ public class ConnectionPool {
      * @param connection the connection to be restored.
      */
     public synchronized void restoreConnection (Connection connection){
+        logger.info("restoreConnection");
         connections.add(connection);
         notifyAll();
     }
@@ -64,6 +72,7 @@ public class ConnectionPool {
      * @throws SQLException if a database access error occurs.
      */
     public void closeAllConnections () throws SQLException {
+        logger.info("closeAllConnections");
         for (Connection connection : connections) {
             connection.close();
         }

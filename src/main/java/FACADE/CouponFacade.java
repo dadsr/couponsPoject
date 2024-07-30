@@ -2,6 +2,8 @@ package FACADE;
 
 import BEANS.CouponException;
 import DAO.CouponsDBDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -9,6 +11,7 @@ import java.sql.SQLException;
 import static FACADE.AdminFacade.logger;
 
 public class CouponFacade extends ClientFacade{
+    protected static final Logger logger = LogManager.getLogger();
 
     public CouponFacade() throws SQLException {
     }
