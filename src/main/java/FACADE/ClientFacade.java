@@ -5,7 +5,9 @@ import DAO.CouponsDBDAO;
 import DAO.CustomersDBDAO;
 import java.sql.SQLException;
 
- public abstract class ClientFacade {
+import static FACADE.AdminFacade.logger;
+
+public abstract class ClientFacade {
      protected CompaniesDBDAO companiesDbDao ;
      protected  CustomersDBDAO customersDbDao;
      protected CouponsDBDAO couponsDbDao;
@@ -14,6 +16,7 @@ import java.sql.SQLException;
          this.companiesDbDao = new CompaniesDBDAO();
          this.customersDbDao = new CustomersDBDAO();
          this.couponsDbDao = new CouponsDBDAO();
+         logger.info("ClientFacade");
      }
      /**
       * Abstract method for login functionality.

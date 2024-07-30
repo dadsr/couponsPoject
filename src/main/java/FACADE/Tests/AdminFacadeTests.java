@@ -42,7 +42,7 @@ public class AdminFacadeTests {
         System.out.println("getAllCompanies");
         admin.getAllCompanies();
         System.out.println("getAllCustomer");
-        admin.getAllCustomer();
+        admin.getAllCustomers();
         System.out.println("getOneCompany");
         admin.getOneCompany(4);
         System.out.println("getOneCustomer");
