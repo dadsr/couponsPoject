@@ -60,9 +60,10 @@ public class CustomersDBDAO implements CustomersDAO {
             statement.setString(2, customer.getLastName());
             statement.setString(3, customer.getEmail());
             statement.setString(4,customer.getPassword());
-            if(statement.execute())
+            if(statement.execute()) {
                 logger.error("addCustomer - add failed");
                 throw new CustomerException("addCustomer failed");
+            }
         } catch (InterruptedException | SQLException e) {
             logger.error("addCustomer {}", e.getMessage());
             throw new CustomerException(e.getMessage());
@@ -86,9 +87,10 @@ public class CustomersDBDAO implements CustomersDAO {
             statement.setString(4,customer.getPassword());
             statement.setInt(5,customer.getId());
 
-            if(statement.execute())
+            if(statement.execute()) {
                 logger.error("updateCustomer - update failed");
                 throw new CustomerException("updateCustomer failed");
+            }
         } catch (InterruptedException | SQLException e) {
             logger.error("updateCustomer {}", e.getMessage());
             throw new CustomerException(e.getMessage());
@@ -168,7 +170,7 @@ public class CustomersDBDAO implements CustomersDAO {
                         resultSet.getString(5),//String password
                         getAllCouponsByCustomer(customerID));//ArrayList<BEANS.Coupon> coupons
             }else {
-                logger.error("getSelectedCustomer - geting customer failed");
+                logger.error("getSelectedCustomer - getting customer failed");
                 throw new CustomerException("getSelectedCustomer failed");
             }
         } catch (InterruptedException | SQLException e) {

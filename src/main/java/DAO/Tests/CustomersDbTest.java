@@ -3,6 +3,9 @@ package DAO.Tests;
 import BEANS.Customer;
 import BEANS.CustomerException;
 import DAO.CustomersDBDAO;
+import com.sun.tools.javac.Main;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,7 +13,14 @@ import java.util.Random;
 
 public class CustomersDbTest {
     public static void main(String[] args) throws CustomerException, SQLException {
+        final Logger logger = LogManager.getLogger(Main.class);
 
+
+        logger.trace("Trace message");
+        logger.debug("Debug message");
+        logger.info("Info message");
+        logger.warn("Warn message");
+        logger.error("Error message");
 
     Random rnd =new Random();
     CustomersDBDAO customersDbDao = new CustomersDBDAO();
@@ -32,15 +42,15 @@ public class CustomersDbTest {
         }
 
         System.out.println("**getSelectedCustomer**");
-        customersDbDao.getSelectedCustomer(1);
-        Customer tempCustomer =customersDbDao.getSelectedCustomer(1);
-        tempCustomer.setId(2);
+        customersDbDao.getSelectedCustomer(5);
+        Customer tempCustomer =customersDbDao.getSelectedCustomer(5);
+        tempCustomer.setId(6);
         System.out.println("**deleteCustomer**");
-        customersDbDao.deleteCustomer(1);
+        customersDbDao.deleteCustomer(7);
         System.out.println("**updateCompany**");
         customersDbDao.updateCustomer(tempCustomer);
         System.out.println("**getSelectedCompany**");
-        customersDbDao.getSelectedCustomer(2);
+        customersDbDao.getSelectedCustomer(8);
         System.out.println("**getAllCompanies**");
         ArrayList<Customer> allCustomers = customersDbDao.getAllCustomers();
         for (Customer allCustomer : allCustomers) {
