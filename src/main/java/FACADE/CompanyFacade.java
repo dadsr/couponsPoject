@@ -32,8 +32,8 @@ public class CompanyFacade  extends ClientFacade {
     public int login(String email, String password) {
         logger.info("login");
         try {
-            return customersDbDao.isCustomerExists(email,password);
-        } catch (CustomerException e) {
+            return companiesDbDao.isCompanyExists(email,password);
+        } catch (CompanyException e) {
             logger.error("login {}", e.getMessage());
             throw new RuntimeException(e);
         }

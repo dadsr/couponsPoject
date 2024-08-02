@@ -1,9 +1,6 @@
 package FACADE.Tests;
 
-import BEANS.CategoryEnum;
-import BEANS.Company;
-import BEANS.Coupon;
-import BEANS.Customer;
+import BEANS.*;
 import DAO.CompaniesDBDAO;
 import FACADE.AdminFacade;
 
@@ -13,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class AdminFacadeTests {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, CompanyException {
         Random rnd =new Random();
         AdminFacade  admin = new AdminFacade();
 

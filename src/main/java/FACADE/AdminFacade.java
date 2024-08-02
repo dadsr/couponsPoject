@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class AdminFacade extends ClientFacade {
     ClientFacade facade;
-    protected static final Logger logger = LogManager.getLogger();
+    protected static final Logger logger = LogManager.getLogger(AdminFacade.class.getName());
 
 
     public AdminFacade() throws SQLException {
@@ -27,7 +27,7 @@ public class AdminFacade extends ClientFacade {
     public void addCompany(Company company){
         logger.info("addCompany");
         try {
-            if(!companiesDbDao.isCompanyExists(company.getEmail(), company.getName()))
+            if(companiesDbDao.isCompanyExists(company.getEmail(), company.getName()) == 0)
                 companiesDbDao.addCompany(company);
             else {
                 logger.error("addCompany - Company already exists");
@@ -42,7 +42,7 @@ public class AdminFacade extends ClientFacade {
     public void updateCompany(Company company){
         logger.info("updateCompany");
         try {
-            if(companiesDbDao.isCompanyExists(company.getEmail(), company.getName()))
+            if(companiesDbDao.isCompanyExists(company.getEmail(), company.getName()) !=0 )
                 companiesDbDao.updateCompany(company);
             else {
                 logger.error("updateCompany - Company does not exist");
@@ -74,13 +74,13 @@ public class AdminFacade extends ClientFacade {
         }
 
     }
-    public Company getOneCompany(int companyID){
+    public Company getOneCompany(int companyID) throws CompanyException {
         logger.info("getOneCompany1");
         try {
             return companiesDbDao.getSelectedCompany(companyID);
         } catch (CompanyException e) {
             logger.error("getOneCompany1 {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CompanyException(e.getMessage());
         }
     }
     public Company getOneCompany(String email, String password){

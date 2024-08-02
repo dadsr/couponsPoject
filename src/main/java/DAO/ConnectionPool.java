@@ -20,7 +20,7 @@ public class ConnectionPool {
     private final String PASSWORD ="admin";
     private List<Connection> connections = new ArrayList<>(MAX_CONNECTIONS);
     private static ConnectionPool instance;
-    protected static final Logger logger = LogManager.getLogger();
+    protected static final Logger logger = LogManager.getLogger(ConnectionPool.class.getName());
 
     /**
      * Private constructor to initialize the connection pool.

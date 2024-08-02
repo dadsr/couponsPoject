@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CompaniesDBDAO implements CompaniesDAO {
     private ConnectionPool connectionPool;
-    protected static final Logger logger = LogManager.getLogger();
+    protected static final Logger logger = LogManager.getLogger(CompaniesDBDAO.class.getName());
 
     public CompaniesDBDAO() throws SQLException {
         connectionPool = ConnectionPool.getInstance();
@@ -22,7 +22,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
-    public boolean isCompanyExists(String email, String password) throws CompanyException {
+    public int isCompanyExists(String email, String password) throws CompanyException {
         logger.info("isCompanyExists");
         Connection connection =null;
         try {
@@ -32,7 +32,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
             statement.setString(1,email);
             statement.setString(2,password);
             ResultSet resultSet =statement.executeQuery();
-            return (resultSet.next());
+            if (resultSet.next())
+                return resultSet.getInt(1);//company id
+            return 0;//false
 
         } catch (InterruptedException | SQLException e) {
             logger.error("isCompanyExists {}", e.getMessage());

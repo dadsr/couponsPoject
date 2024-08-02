@@ -11,11 +11,11 @@ public class CouponExpirationDailyJob  implements Runnable {
 
     @Override
     public void run() {
-        logger.info("isCustomerExists");
+        logger.info("run");
 
 /*    while (true) {
             CouponFacade.deleteExpiredCoupons();
-            Thread.sleep(sleepTime);
+            Thread.sleep(3 600 000);
         }
     }
   */
