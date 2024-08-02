@@ -28,7 +28,7 @@ public class LoginManager {
         switch (clientType.name()){
             case "ADMINISTRATOR" :{
                 AdminFacade admin = new AdminFacade();
-                return (admin.login(email,password)!=1)?admin:null;
+                return (admin.login(email,password)==1)?admin:null;
             }
             case "COMPANY" :{
                 CompanyFacade comp = new CompanyFacade();
