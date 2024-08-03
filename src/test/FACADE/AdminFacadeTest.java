@@ -70,11 +70,10 @@ class AdminFacadeTest {
     @Test
     void updateCompany() {
         try {
-            Company company =new AdminFacade().getOneCompany("email@email.com", "password");
+            Company company =new AdminFacade().getOneCompany(71);
             company.setEmail("XnewEmail@new.mail");
-            company.setName("ynapmoc");
+            company.setPassword("newPassword");
             System.out.print("Update a new company ");
-
             new AdminFacade().updateCompany(company);
             System.out.println(" - success");
         } catch (SQLException |CompanyException e) {

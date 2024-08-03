@@ -44,7 +44,6 @@ public class CustomersDbTest {
         System.out.println("**getSelectedCustomer**");
         customersDbDao.getSelectedCustomer(5);
         Customer tempCustomer =customersDbDao.getSelectedCustomer(5);
-        tempCustomer.setId(6);
         System.out.println("**deleteCustomer**");
         customersDbDao.deleteCustomer(7);
         System.out.println("**updateCompany**");

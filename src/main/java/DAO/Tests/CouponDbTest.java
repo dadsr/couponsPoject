@@ -34,9 +34,8 @@ public class CouponDbTest {
         System.out.println("**getSelectedCoupon**");
 
         Coupon tempCoupon =couponsDbDao.getSelectedCoupon(4);
-        tempCoupon.setId(5);
         System.out.println("**deleteCoupon**");
-        couponsDbDao.deleteCoupon(5);
+        couponsDbDao.deleteCoupon(4);
         System.out.println("**updateCoupon**");
         couponsDbDao.updateCoupon(tempCoupon);
         System.out.println("**getSelectedCoupon**");

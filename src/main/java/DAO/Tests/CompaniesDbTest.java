@@ -29,9 +29,8 @@ public class CompaniesDbTest {
         }
         System.out.println("**getSelectedCompany**");
         Company tempComp = companiesDbDao.getSelectedCompany(5);
-        tempComp.setId(6);
         System.out.println("**deleteCompany**");
-        companiesDbDao.deleteCompany(6);
+        companiesDbDao.deleteCompany(5);
         System.out.println("**updateCompany**");
         companiesDbDao.updateCompany(tempComp);
         System.out.println("**getSelectedCompany**");
