@@ -20,10 +20,31 @@ public class CompaniesDBDAO implements CompaniesDAO {
         logger.info("CompaniesDBDAO");
 
     }
+    //used in updateCompany
+    public int isCompanyExists(int id) throws CompanyException {
+        logger.info("isCompanyExists2");
+        Connection connection =null;
+        try {
+            connection = connectionPool.getConnection();
+            String query ="SELECT * FROM companies WHERE id = ? ;";
+            PreparedStatement statement =connection.prepareStatement(query);
+            statement.setInt(1,id);
+            ResultSet resultSet =statement.executeQuery();
+            if (resultSet.next())
+                return resultSet.getInt(1);//company id
+            return 0;//false
 
+        } catch (InterruptedException | SQLException e) {
+            logger.error("isCompanyExists2 {}", e.getMessage());
+            throw new CompanyException(e.getMessage());
+        }finally {
+            if (connection != null)
+                connectionPool.restoreConnection(connection);
+        }
+    }
     @Override
     public int isCompanyExists(String email, String password) throws CompanyException {
-        logger.info("isCompanyExists");
+        logger.info("isCompanyExists1");
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -37,7 +58,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             return 0;//false
 
         } catch (InterruptedException | SQLException e) {
-            logger.error("isCompanyExists {}", e.getMessage());
+            logger.error("isCompanyExists1 {}", e.getMessage());
             throw new CompanyException(e.getMessage());
         }finally {
             if (connection != null)
@@ -198,7 +219,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
-            String query ="SELECT * FROM companies WHERE email = ? AND password ?;";
+            String query ="SELECT * FROM companies WHERE email = ? AND password = ? ;";
             PreparedStatement statement =connection.prepareStatement(query);
             statement.setString(1, email);
             statement.setString(2, password);

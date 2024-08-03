@@ -9,15 +9,15 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdminFacadeTest {
-    Company company;
- //   void login()  - tested on LoginManagerTest
+
+    //   void login()  - tested on LoginManagerTest
 
     @Test
     void getOneCompany() {
         System.out.print("getting non existing company ");
         try {
             new AdminFacade().getOneCompany(666);
-            System.out.println(" - faild");
+            System.out.println(" - failed");
         } catch (CompanyException e) {
             System.out.println(" - success");
         } catch (SQLException e) {
@@ -26,37 +26,60 @@ class AdminFacadeTest {
 
         System.out.print("getting an existing company ");
         int tstId = 33;
+        Company company =null;
         try {
 
             company = new AdminFacade().getOneCompany(tstId);
         } catch (CompanyException e) {
-            System.out.println(" - faild");
+            System.out.println(" - failed");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         if(company.getId() == tstId){
             System.out.println(" - success");
         }else {
-            System.out.println(" - faild");
+            System.out.println(" - failed");
         }
     }
 
     @Test
     void addCompany() {
-        System.out.print("Adding an existing company");
+        AdminFacade admin = null;
         try {
-            AdminFacade admin = new AdminFacade();
-            admin.addCompany(company);
-            System.out.println(" - faild");
-        }catch (Exception e){
-            System.out.println(" - success");
+            admin = new AdminFacade();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        System.out.print("Adding new company");
+        try {
+            System.out.print("Adding existing company");
+            int tstId = 33;
+            Company    company = new AdminFacade().getOneCompany(tstId);
+            admin.addCompany(company);
+            System.out.print("Adding new company + getOneCompany by email & password ");
+            admin.addCompany(new Company("company", "email@email.com", "password", null));
+            if (new AdminFacade().getOneCompany("email@email.com", "password").getId() > 0) {
+                System.out.println(" - success");
+            } else {
+                System.out.println(" - failed");
+            }
+        } catch (SQLException | CompanyException e) {
+            System.out.println(" - failed");
+        }
     }
 
     @Test
     void updateCompany() {
+        try {
+            Company company =new AdminFacade().getOneCompany("email@email.com", "password");
+            company.setEmail("XnewEmail@new.mail");
+            company.setName("ynapmoc");
+            System.out.print("Update a new company ");
 
+            new AdminFacade().updateCompany(company);
+            System.out.println(" - success");
+        } catch (SQLException |CompanyException e) {
+            System.out.println(" - failed");
+        }
     }
 
     @Test
@@ -68,9 +91,6 @@ class AdminFacadeTest {
     }
 
 
-    @Test
-    void testGetOneCompany() {
-    }
 
     @Test
     void addCustomer() {
