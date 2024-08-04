@@ -22,13 +22,13 @@ public class CouponFacade extends ClientFacade{
         return 1;
     }
 
-    public void deleteExpiredCoupons(){
+    public void deleteExpiredCoupons() throws CouponException {
         logger.info("deleteExpiredCoupons");
         try {
             new CouponsDBDAO().deleteCouponsByExpirationDate();
         } catch (CouponException | SQLException e) {
             logger.error("deleteExpiredCoupons {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CouponException(e.getMessage());
         }
     }
 

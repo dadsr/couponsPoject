@@ -1,5 +1,6 @@
 package PROGRAM;
 
+import BEANS.CouponException;
 import FACADE.AdminFacade;
 import FACADE.ClientFacade;
 import FACADE.CompanyFacade;
@@ -23,7 +24,7 @@ public class LoginManager {
             instance = new LoginManager();
         return instance;
     }
-    public ClientFacade login (String email, String password , ClientTypeEnum clientType) throws SQLException {
+    public ClientFacade login (String email, String password , ClientTypeEnum clientType) throws SQLException, CouponException {
         logger.info("login");
         switch (clientType.name()){
             case "ADMINISTRATOR" :{

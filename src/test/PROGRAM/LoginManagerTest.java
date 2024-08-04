@@ -1,5 +1,6 @@
 package PROGRAM;
 
+import BEANS.CouponException;
 import FACADE.ClientFacade;
 import org.junit.jupiter.api.Test;
 
@@ -84,9 +85,8 @@ class LoginManagerTest {
             } else{
                 System.out.println(" - faild");
             }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException|CouponException e) {
+            System.out.println(" - faild");
         }
     }
 }

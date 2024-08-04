@@ -357,7 +357,7 @@ public class CouponsDBDAO implements CouponsDAO {
             if (!statement.execute()) {
                 query = "DELETE FROM coupons WHERE end_date <= current_time();";
                 statement = connection.prepareStatement(query);
-                if (!statement.execute()) {
+                if (statement.execute()) {
                     logger.error("deleteCouponsByExpirationDate - deleting coupons from coupons failed");
                     throw new CouponException("deleteCouponsByExpirationDate failed");
                 }
@@ -587,7 +587,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     /************************************ check by methods ***************************************************/
-    public boolean checkCouponPurchase(int customerID, int couponID) {
+    public boolean checkCouponPurchase(int customerID, int couponID) throws CouponException {
         logger.info("checkCouponPurchase");
         try {
             Connection connection = connectionPool.getConnection();
@@ -605,7 +605,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 return false;
         } catch (SQLException | InterruptedException e) {
             logger.error("checkCouponPurchase {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CouponException(e.getMessage());
         }
     }
 }
