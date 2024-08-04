@@ -34,15 +34,28 @@ public class AdminFacadeTests {
         }
         System.out.println("addCustomer");
         for (Customer customer : customers) {
-            admin.addCustomer(customer);
+            try {
+                admin.addCustomer(customer);
+            } catch (CustomerException e) {
+                throw new RuntimeException(e);
+            }
         }
-        System.out.println("getAllCompanies");
-        admin.getAllCompanies();
-        System.out.println("getAllCustomer");
-        admin.getAllCustomers();
-        System.out.println("getOneCompany");
-        admin.getOneCompany(4);
-        System.out.println("getOneCustomer");
-        admin.getOneCustomer(3);
+
+        try {
+            admin.getAllCustomers();
+
+            System.out.println("getAllCompanies");
+            admin.getAllCompanies();
+            System.out.println("getAllCustomer");
+            System.out.println("getOneCompany");
+            admin.getOneCompany(4);
+            System.out.println("getOneCustomer");
+
+            admin.getOneCustomer(3);
+        } catch (CustomerException ex) {
+            throw new RuntimeException(ex);
+        }
+
+
     }
 }

@@ -92,53 +92,64 @@ public class AdminFacade extends ClientFacade {
             throw new CompanyException(e.getMessage());
         }
     }
-    public void addCustomer(Customer customer) throws CompanyException {
+    public void addCustomer(Customer customer) throws CustomerException {
         logger.info("addCustomer");
         try {
             if(!customersDbDao.isCustomerExists(customer.getEmail()))
                 customersDbDao.addCustomer(customer);
         } catch (CustomerException e) {
             logger.error("addCustomer {}", e.getMessage());
-            throw new CompanyException(e.getMessage());
+            throw new CustomerException(e.getMessage());
         }
     }
-    public void updateCustomer(Customer customer) throws CompanyException {
+    public void updateCustomer(Customer customer) throws CustomerException {
         logger.info("updateCustomer");
         try {
             if(customersDbDao.isCustomerExists(customer.getEmail(),customer.getPassword()) != 0)
                 customersDbDao.updateCustomer(customer);
         } catch (CustomerException e) {
             logger.error("updateCustomer {}", e.getMessage());
-            throw new CompanyException(e.getMessage());
+            throw new CustomerException(e.getMessage());
         }
     }
-    public void deleteCustomer(int customerID) throws CompanyException {
+    public void deleteCustomer(int customerID) throws CustomerException {
         logger.info("deleteCustomer");
         try {
             couponsDbDao.deletePurchasesByCustomer(customerID);
             customersDbDao.deleteCustomer(customerID);
         } catch (CouponException | CustomerException e) {
             logger.error("deleteCustomer {}", e.getMessage());
-            throw new CompanyException(e.getMessage());
+            throw new CustomerException(e.getMessage());
         }
 
     }
-    public ArrayList<Customer> getAllCustomers() throws CompanyException {
+    public ArrayList<Customer> getAllCustomers() throws CustomerException {
         logger.info("getAllCustomers");
         try {
             return customersDbDao.getAllCustomers();
         } catch (CustomerException e) {
             logger.error("getAllCustomers {}", e.getMessage());
-            throw new CompanyException(e.getMessage());
+            throw new CustomerException(e.getMessage());
         }
     }
-    public Customer getOneCustomer(int customerID) throws CompanyException {
-        logger.info("getOneCustomer");
+    public Customer getOneCustomer(int customerID) throws CustomerException {
+        logger.info("getOneCustomer1");
         try {
             return customersDbDao.getSelectedCustomer(customerID);
         } catch (CustomerException e) {
-            logger.error("getOneCustomer {}", e.getMessage());
-            throw new CompanyException(e.getMessage());
+            logger.error("getOneCustomer1 {}", e.getMessage());
+            throw new CustomerException(e.getMessage());
         }
     }
+    public Customer getOneCustomer(String email, String password) throws CustomerException {
+        logger.info("getOneCustomer2");
+        try {
+            return customersDbDao.getSelectedCustomer(email,password);
+        } catch (CustomerException e) {
+            logger.error("getOneCustomer2 {}", e.getMessage());
+            throw new CustomerException(e.getMessage());
+        }
+    }
+
+
 }

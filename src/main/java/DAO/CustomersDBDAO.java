@@ -236,4 +236,34 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
 
+    /******************************************************************************************************** */
+    public Customer getSelectedCustomer(String email, String password) throws CustomerException {
+        logger.info("getSelectedCustomer");
+        Connection connection =null;
+        try {
+            connection = connectionPool.getConnection();
+            String query ="SELECT * FROM customers WHERE  email = ? AND password = ? ;";
+            PreparedStatement statement =connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return new Customer(resultSet.getInt(1),//int id
+                        resultSet.getString(2),// String firstName
+                        resultSet.getString(3),//String lastName
+                        resultSet.getString(4),//String email
+                        resultSet.getString(5),//String password
+                        getAllCouponsByCustomer(resultSet.getInt(1)));//ArrayList<BEANS.Coupon> coupons
+            }else {
+                logger.error("getSelectedCustomer - getting customer failed");
+                throw new CustomerException("getSelectedCustomer failed");
+            }
+        } catch (InterruptedException | SQLException e) {
+            logger.error("getSelectedCustomer {}", e.getMessage());
+            throw new CustomerException(e.getMessage());
+        } finally {
+            if (connection != null)
+                connectionPool.restoreConnection(connection);
+        }
+    }
 }
