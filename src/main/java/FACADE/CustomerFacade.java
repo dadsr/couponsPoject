@@ -31,13 +31,13 @@ public class CustomerFacade extends ClientFacade {
     }
     */
     @Override
-    public int login(String email, String password) {
+    public int login(String email, String password) throws CustomerException {
         logger.info("login");
         try {
             return customersDbDao.isCustomerExists(email,password);
         } catch (CustomerException e) {
             logger.error("login {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
         }
     }
     public void purchaseCoupons(Coupon coupon){
@@ -54,40 +54,43 @@ public class CustomerFacade extends ClientFacade {
             throw new RuntimeException(e);
         }
     }
-    public ArrayList<Coupon> getCustomerCoupons(){
+    public ArrayList<Coupon> getCustomerCoupons() throws CustomerException {
         logger.info("getCustomerCoupons1");
         try {
             return couponsDbDao.allCouponsByCustomer(customerID);
         } catch (CouponException e) {
             logger.error("getCustomerCoupons1 {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
         }
     }
-    public ArrayList<Coupon> getCustomerCoupons(CategoryEnum category){
+    public ArrayList<Coupon> getCustomerCoupons(CategoryEnum category) throws CustomerException {
         logger.info("getCustomerCoupons2");
         try {
             return couponsDbDao.allCouponsByCustomerAndCategory(customerID, category.getId());
         } catch (CouponException e) {
             logger.error("getCustomerCoupons2 {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
+
         }
     }
-    public ArrayList<Coupon> getCustomerCoupons(double maxPrice){
+    public ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CustomerException {
         logger.info("getCustomerCoupons3");
         try {
             return couponsDbDao.allCouponsByCustomerAndMaxPrice(customerID,maxPrice);
         } catch (CouponException e) {
             logger.error("getCustomerCoupons3 {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
+
         }
     }
-    public Customer getCustomerDetails(){
+    public Customer getCustomerDetails() throws CustomerException {
         logger.info("getCustomerDetails");
         try {
             return customersDbDao.getSelectedCustomer(customerID);
         } catch (CustomerException e) {
             logger.error("getCustomerDetails {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
+
         }
     }
 }
