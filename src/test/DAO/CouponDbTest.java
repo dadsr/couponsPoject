@@ -1,10 +1,9 @@
-package DAO.Tests;
+package DAO;
 
 import BEANS.CategoryEnum;
 import BEANS.Coupon;
 import BEANS.CouponException;
 import BEANS.CustomerException;
-import DAO.CouponsDBDAO;
 
 import java.sql.Date;
 import java.sql.SQLException;

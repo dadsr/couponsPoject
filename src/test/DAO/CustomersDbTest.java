@@ -1,8 +1,7 @@
-package DAO.Tests;
+package DAO;
 
 import BEANS.Customer;
 import BEANS.CustomerException;
-import DAO.CustomersDBDAO;
 import com.sun.tools.javac.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

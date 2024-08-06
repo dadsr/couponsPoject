@@ -23,7 +23,6 @@ public class CustomersDBDAO implements CustomersDAO {
         connectionPool = ConnectionPool.getInstance();
         logger.info("CustomersDBDAO");
     }
-
     @Override
     public int isCustomerExists(String email, String password) throws CustomerException {
         logger.info("isCustomerExists");
@@ -47,7 +46,6 @@ public class CustomersDBDAO implements CustomersDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public void addCustomer(Customer customer) throws CustomerException {
         logger.info("addCustomer");
@@ -69,7 +67,6 @@ public class CustomersDBDAO implements CustomersDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public void updateCustomer(Customer customer) throws CustomerException {
         logger.info("updateCustomer");
@@ -92,7 +89,6 @@ public class CustomersDBDAO implements CustomersDAO {
         }
 
     }
-
     @Override
     public void deleteCustomer(int customerID) throws CustomerException {
         logger.info("deleteCustomer");
@@ -115,7 +111,6 @@ public class CustomersDBDAO implements CustomersDAO {
         }
 
     }
-
     @Override
     public ArrayList<Customer> getAllCustomers() throws CustomerException {
         logger.info("getAllCustomers");
@@ -138,7 +133,6 @@ public class CustomersDBDAO implements CustomersDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public Customer getSelectedCustomer(int customerID) throws CustomerException {
         logger.info("getSelectedCustomer");
@@ -163,7 +157,6 @@ public class CustomersDBDAO implements CustomersDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     private ArrayList<Coupon> getAllCouponsByCustomer(int customerID) throws CustomerException {
         logger.info("getAllCouponsByCustomer");
         Connection connection =null;
@@ -187,7 +180,6 @@ public class CustomersDBDAO implements CustomersDAO {
         }
 
     }
-
     /************************************ check by methods ***************************************************/
     public boolean isCustomerExists(String email) throws CustomerException {
         logger.info("isCustomerExists");
@@ -207,7 +199,6 @@ public class CustomersDBDAO implements CustomersDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     /******************************************************************************************************** */
     public Customer getSelectedCustomer(String email, String password) throws CustomerException {
         logger.info("getSelectedCustomer");

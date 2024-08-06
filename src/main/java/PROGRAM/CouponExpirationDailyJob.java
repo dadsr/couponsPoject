@@ -6,6 +6,7 @@ import FACADE.CouponFacade;
 public class CouponExpirationDailyJob  implements Runnable {
     protected static final Logger logger = LogManager.getLogger();
 
+    //todo finish this !
     public CouponExpirationDailyJob() {
     }
 

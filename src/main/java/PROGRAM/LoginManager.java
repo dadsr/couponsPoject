@@ -1,7 +1,9 @@
 package PROGRAM;
 
+import BEANS.CompanyException;
 import BEANS.CouponException;
 import BEANS.CustomerException;
+import BEANS.LoginException;
 import FACADE.AdminFacade;
 import FACADE.ClientFacade;
 import FACADE.CompanyFacade;
@@ -25,29 +27,34 @@ public class LoginManager {
             instance = new LoginManager();
         return instance;
     }
-    public ClientFacade login (String email, String password , ClientTypeEnum clientType) throws SQLException, CouponException, CustomerException {
+    public ClientFacade login (String email, String password , ClientTypeEnum clientType) throws LoginException {
         logger.info("login");
-        switch (clientType.name()){
-            case "ADMINISTRATOR" :{
-                AdminFacade admin = new AdminFacade();
-                return (admin.login(email,password)==1)?admin:null;
-            }
-            case "COMPANY" :{
-                CompanyFacade comp = new CompanyFacade();
-                comp.setCompanyID(comp.login(email,password));
-                return  (comp.getCompanyID() == 0)?null:comp;
-            }
-            case "CUSTOMER" :{
-                CustomerFacade cust = new CustomerFacade();
-                try {
-                    cust.setCustomerID(cust.login(email,password));
-                } catch (CustomerException e) {
-                    throw new CustomerException(e.getMessage());
+        try {
+            switch (clientType.name()) {
+                case "ADMINISTRATOR": {
+                    AdminFacade admin = null;
+                    admin = new AdminFacade();
+                    return (admin.login(email, password) == 1) ? admin : null;
                 }
-                return (cust.getCustomerID()!=0)?cust:null;
-            } default:
-                return null;
-        }
+                case "COMPANY": {
+                    CompanyFacade comp = new CompanyFacade();
+                    comp.setCompanyID(comp.login(email, password));
+                    return (comp.getCompanyID() == 0) ? null : comp;
+                }
+                case "CUSTOMER": {
+                    CustomerFacade cust = new CustomerFacade();
+                    cust.setCustomerID(cust.login(email, password));
+                    return (cust.getCustomerID() != 0) ? cust : null;
+                }
+                default:
+                    return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (CustomerException | CompanyException e) {
+            throw new LoginException(e.getMessage());
 
+
+        }
     }
 }

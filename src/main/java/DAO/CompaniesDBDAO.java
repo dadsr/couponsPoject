@@ -196,7 +196,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public Company getSelectedCompany(String email, String password) throws CompanyException {
         logger.info("getSelectedCompany2");
         Connection connection =null;
@@ -221,7 +220,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     /************************************ resultSetTo methods ***************************************************/
     public void companyToStatement(Company company, PreparedStatement statement) throws SQLException {
         statement.setString(1, company.getName());

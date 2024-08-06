@@ -1,8 +1,7 @@
-package DAO.Tests;
+package DAO;
 
 import BEANS.Company;
 import BEANS.CompanyException;
-import DAO.CompaniesDBDAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

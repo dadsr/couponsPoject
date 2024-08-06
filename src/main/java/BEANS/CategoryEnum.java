@@ -24,5 +24,4 @@ public enum CategoryEnum {
         }
         throw new IllegalArgumentException("No matching BEANS.CategoryEnum for id " + id);
     }
-
 }
