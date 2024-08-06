@@ -18,7 +18,6 @@ public class CouponsDBDAO implements CouponsDAO {
         connectionPool = ConnectionPool.getInstance();
     }
 
-
     @Override
     // Method to add a new coupon to the database
     public void addCoupon(Coupon coupon) throws CouponException {
@@ -28,15 +27,7 @@ public class CouponsDBDAO implements CouponsDAO {
             connection = connectionPool.getConnection();
             String query = "INSERT INTO coupons (company_id,category_id,title,description,start_date,end_date,amount,price,image,insert_date) VALUES (?,?,?,?,?,?,?,?,?,current_time());";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, coupon.getCompanyId());//company_id
-            statement.setInt(2, coupon.getCategory().getId());//category_id
-            statement.setString(3, coupon.getTitle());//title
-            statement.setString(4, coupon.getDescription());//description
-            statement.setDate(5, coupon.getStartDate());//start_date
-            statement.setDate(6, coupon.getEndDate());//end_date
-            statement.setInt(7, coupon.getAmount());//amount
-            statement.setDouble(8, coupon.getPrice());//price
-            statement.setString(9, coupon.getImage());//image
+            couponToStatement(coupon,statement);
             if (statement.execute()) {
                 logger.error("addCoupon - adding failed");
                 throw new CouponException("addCoupon failed");
@@ -50,7 +41,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     // Method to update an existing coupon in the database
     public void updateCoupon(Coupon coupon) throws CouponException {
@@ -60,15 +50,7 @@ public class CouponsDBDAO implements CouponsDAO {
             connection = connectionPool.getConnection();
             String query = "UPDATE coupons SET category_id = ?,title = ?,description = ?,start_date = ?,end_date = ?,amount = ?,price = ?,image = ? WHERE id = ?;";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, coupon.getCategoryId());
-            statement.setString(2, coupon.getTitle());
-            statement.setString(3, coupon.getDescription());
-            statement.setDate(4, coupon.getStartDate());
-            statement.setDate(5, coupon.getEndDate());
-            statement.setInt(6, coupon.getAmount());
-            statement.setDouble(7, coupon.getPrice());
-            statement.setString(8, coupon.getImage());
-            statement.setInt(9, coupon.getId());
+            couponToStatement(coupon,statement);
             if (statement.execute()) {
                 logger.error("updateCoupon - updating failed");
                 throw new CouponException("updateCoupon failed");
@@ -82,7 +64,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     // Method to delete a coupon from the database
     public void deleteCoupon(int couponID) throws CouponException {
@@ -106,7 +87,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     // Method to retrieve all coupons from the database
     public ArrayList<Coupon> getAllCoupons() throws CouponException {
@@ -119,18 +99,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -143,7 +112,6 @@ public class CouponsDBDAO implements CouponsDAO {
         }
 
     }
-
     @Override
     // Method to retrieve a specific coupon from the database by its ID
     public Coupon getSelectedCoupon(int couponID) throws CouponException {
@@ -156,18 +124,7 @@ public class CouponsDBDAO implements CouponsDAO {
             statement.setInt(1, couponID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return (new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                return (resultSetToCoupon(resultSet));
             } else {
                 logger.error("getSelectedCoupon - getting coupon failed");
                 throw new CouponException("getSelectedCoupon failed");
@@ -181,7 +138,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     // Method to record a coupon purchase by a customer and update the coupon's amount
     public void addCouponPurchase(int customerId, int couponID) throws CouponException {
@@ -215,7 +171,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     // Method to delete a coupon purchase by a customer and update the coupon's amount
     public void deleteCouponPurchase(int customerId, int couponID) throws CouponException {
@@ -251,7 +206,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     /************************************ delete by methods ***************************************************/
     public void deletePurchasesByCompany(int companyId) throws CouponException {
         logger.info("deletePurchasesByCompany");
@@ -273,7 +227,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public void deleteCouponsByCompany(int companyId) throws CouponException {
         logger.info("deleteCouponsByCompany");
         Connection connection = null;
@@ -295,7 +248,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public void deletePurchasesByCustomer(int customerID) throws CouponException {
         logger.info("deletePurchasesByCustomer");
         Connection connection = null;
@@ -324,7 +276,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public void deletePurchasesByCoupon(int couponID) throws CouponException {
         logger.info("deletePurchasesByCoupon");
         Connection connection = null;
@@ -346,7 +297,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public void deleteCouponsByExpirationDate() throws CouponException {
         logger.info("deleteCouponsByExpirationDate");
         Connection connection = null;
@@ -374,7 +324,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     /************************************ get by methods ***************************************************/
     public ArrayList<Coupon> allCouponsByCompany(int companyId) throws CouponException {
         logger.info("allCouponsByCompany");
@@ -387,18 +336,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -422,18 +360,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -457,18 +384,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -480,7 +396,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public ArrayList<Coupon> allCouponsByCustomer(int customerId) throws CouponException {
         logger.info("allCouponsByCustomer");
         Connection connection = null;
@@ -492,18 +407,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -527,18 +431,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -562,18 +455,7 @@ public class CouponsDBDAO implements CouponsDAO {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Coupon> Coupons = new ArrayList<>();
             while (resultSet.next()) {
-                Coupons.add(new Coupon(
-                        resultSet.getInt(1),//id
-                        resultSet.getInt(2),//int companyId,
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
-                        resultSet.getString(4),// String title,
-                        resultSet.getString(5),// String description,
-                        resultSet.getDate(6),// Date startDate,
-                        resultSet.getDate(7),// Date endDate,
-                        resultSet.getInt(8),// int amount,
-                        resultSet.getDouble(9),// Double price,
-                        resultSet.getString(10)// String image
-                ));
+                Coupons.add(resultSetToCoupon(resultSet));
             }
             return Coupons;
         } catch (InterruptedException | SQLException e) {
@@ -585,7 +467,6 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     /************************************ check by methods ***************************************************/
     public boolean checkCouponPurchase(int customerID, int couponID) throws CouponException {
         logger.info("checkCouponPurchase");
@@ -608,5 +489,30 @@ public class CouponsDBDAO implements CouponsDAO {
             throw new CouponException(e.getMessage());
         }
     }
+    /************************************ resultSetTo methods ***************************************************/
+    public void couponToStatement(Coupon coupon,PreparedStatement statement) throws SQLException {
+        statement.setInt(1, coupon.getCompanyId());//company_id
+        statement.setInt(2, coupon.getCategory().getId());//category_id
+        statement.setString(3, coupon.getTitle());//title
+        statement.setString(4, coupon.getDescription());//description
+        statement.setDate(5, coupon.getStartDate());//start_date
+        statement.setDate(6, coupon.getEndDate());//end_date
+        statement.setInt(7, coupon.getAmount());//amount
+        statement.setDouble(8, coupon.getPrice());//price
+        statement.setString(9, coupon.getImage());//image
+    }
+    public Coupon resultSetToCoupon(ResultSet resultSet) throws SQLException {
+        return new Coupon(
+                resultSet.getInt(1),//id
+                resultSet.getInt(2),//int companyId,
+                CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category,
+                resultSet.getString(4),// String title,
+                resultSet.getString(5),// String description,
+                resultSet.getDate(6),// Date startDate,
+                resultSet.getDate(7),// Date endDate,
+                resultSet.getInt(8),// int amount,
+                resultSet.getDouble(9),// Double price,
+                resultSet.getString(10)// String image
+        );
+    }
 }
-

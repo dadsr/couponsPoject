@@ -1,7 +1,6 @@
 package DAO;
 
-import BEANS.Company;
-import BEANS.CompanyException;
+import BEANS.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CompaniesDBDAO implements CompaniesDAO {
     private ConnectionPool connectionPool;
@@ -65,7 +65,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public void addCompany(Company company) throws CompanyException {
         logger.info("addCompany");
@@ -74,9 +73,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             connection = connectionPool.getConnection();
             String query ="INSERT INTO companies (`name`,`email`,`password`,`insert_date`) VALUES (?,?,?,current_time());";
             PreparedStatement statement =connection.prepareStatement(query);
-            statement.setString(1, company.getName());
-            statement.setString(2, company.getEmail());
-            statement.setString(3,company.getPassword());
+            companyToStatement(company,statement);
             if(statement.execute()) {
                 logger.error("addCompany - adding company failed");
                 throw new CompanyException("addCompany failed");
@@ -90,7 +87,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public void updateCompany(Company company)  throws CompanyException {
         logger.info("updateCompany");
@@ -99,10 +95,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             connection = connectionPool.getConnection();
             String query ="UPDATE companies SET email = ?,password = ? WHERE id = ?;";
             PreparedStatement statement =connection.prepareStatement(query);
-            statement.setString(1, company.getEmail());
-            statement.setString(2,company.getPassword());
-            statement.setInt(3,company.getId());
-
+            companyToStatement(company,statement);
             if(statement.execute()) {
                 logger.error("updateCompany - updating company failed");
                 throw new CompanyException("updateCompany failed");
@@ -115,7 +108,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public void deleteCompany(int companyID)  throws CompanyException {
         logger.info("deleteCompany");
@@ -137,7 +129,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     public void deleteCouponsByCompany(int companyID)  throws CompanyException {
         logger.info("deleteCouponsByCompany");
         Connection connection =null;
@@ -158,7 +149,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public ArrayList<Company> getAllCompanies() throws CompanyException {
         logger.info("getAllCompanies");
@@ -170,14 +160,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
             ResultSet resultSet =statement.executeQuery();
             ArrayList<Company> companies =new ArrayList<>();
             while (resultSet.next()){
-                companies.add(new Company(resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
-                        null));//getAllCoupons()));
+                companies.add(resultSetToCompany(resultSet));
             }
             return companies;
-        } catch (InterruptedException | SQLException e) {
+        } catch (InterruptedException | SQLException  e) {
             logger.error("getAllCompanies {}", e.getMessage());
             throw new CompanyException(e.getMessage());
         } finally {
@@ -185,28 +171,24 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
-
     @Override
     public Company getSelectedCompany(int companyID) throws CompanyException {
+
         logger.info("getSelectedCompany1");
-        Connection connection =null;
+        Connection connection = null;
         try {
             connection = connectionPool.getConnection();
-            String query ="SELECT * FROM companies WHERE id = ?;";
-            PreparedStatement statement =connection.prepareStatement(query);
+            String query = "SELECT * FROM companies WHERE id = ?;";
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, companyID);
             ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()){
-                return new Company(resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
-                        null/*getAllCoupons()*/);
-            }else {
+            if (resultSet.next()) {
+                return resultSetToCompany(resultSet);
+            } else {
                 logger.error("getSelectedCompany1 - getting company failed");
                 throw new CompanyException("getSelectedCompany failed");
             }
-        } catch (InterruptedException | SQLException e) {
+        } catch (InterruptedException | SQLException | CompanyException e) {
             logger.error("getSelectedCompany1 {}", e.getMessage());
             throw new CompanyException(e.getMessage());
         } finally {
@@ -214,6 +196,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
+
     public Company getSelectedCompany(String email, String password) throws CompanyException {
         logger.info("getSelectedCompany2");
         Connection connection =null;
@@ -225,11 +208,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                return new Company(resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
-                        null/*getAllCoupons()*/);
+                return resultSetToCompany(resultSet);
             }else {
                 logger.error("getSelectedCompany2 - getting company failed");
                 throw new CompanyException("getSelectedCompany failed");
@@ -243,4 +222,32 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
     }
 
+    /************************************ resultSetTo methods ***************************************************/
+    public void companyToStatement(Company company, PreparedStatement statement) throws SQLException {
+        statement.setString(1, company.getName());
+        statement.setString(2, company.getEmail());
+        statement.setString(3, company.getPassword());
+
+    }
+    public Company resultSetToCompany(ResultSet resultSet) throws CompanyException {
+        int companyId = 0;
+        String name,email,password;
+        ArrayList<Coupon> coupons;
+
+        try{
+            companyId = resultSet.getInt(1);
+            name = resultSet.getString(2);
+            email = resultSet.getString(3);
+            password = resultSet.getString(4);
+
+            return new Company(companyId, name, email, password, new CouponsDBDAO().allCouponsByCompany(companyId));
+        } catch (CouponException | SQLException e) {
+            throw new CompanyException(e.getMessage());
+        }
+    }
 }
+
+
+
+
+

@@ -30,13 +30,13 @@ public class CompanyFacade  extends ClientFacade {
     }
 
     @Override
-    public int login(String email, String password) throws CouponException {
+    public int login(String email, String password) throws CompanyException {
         logger.info("login");
         try {
             return companiesDbDao.isCompanyExists(email,password);
         } catch (CompanyException e) {
             logger.error("login {}", e.getMessage());
-            throw new CouponException(e.getMessage());
+            throw new CompanyException(e.getMessage());
         }
     }
     public void addCoupon(Coupon coupon) throws CouponException {
@@ -66,40 +66,40 @@ public class CompanyFacade  extends ClientFacade {
             throw new CouponException(e.getMessage());
         }
     }
-    public ArrayList<Coupon> getCompanyCoupons() throws CouponException {
+    public ArrayList<Coupon> getCompanyCoupons() throws CompanyException {
         logger.info("getCompanyCoupons1");
         try {
             return couponsDbDao.allCouponsByCompany(companyID);
         } catch (CouponException e) {
             logger.error("getCompanyCoupons {}", e.getMessage());
-            throw new CouponException(e.getMessage());
+            throw new CompanyException(e.getMessage());
         }
     }
-    public ArrayList<Coupon> getCompanyCoupons(CategoryEnum category) throws CouponException {
+    public ArrayList<Coupon> getCompanyCoupons(CategoryEnum category) throws CompanyException {
         logger.info("getCompanyCoupons2");
         try {
             return couponsDbDao.allCouponsByCompanyAndCategory(companyID,category.getId());
         } catch (CouponException e) {
             logger.error("getCompanyCoupons2 {}", e.getMessage());
-            throw new CouponException(e.getMessage());
+            throw new CompanyException(e.getMessage());
         }
     }
-    public ArrayList<Coupon> getCompanyCoupons(Double maxPrice) throws CouponException {
+    public ArrayList<Coupon> getCompanyCoupons(Double maxPrice) throws CompanyException {
         logger.info("getCompanyCoupons3");
         try {
             return couponsDbDao.allCouponsByCompanyAndMaxPrice(companyID,maxPrice);
         } catch (CouponException e) {
             logger.error("getCompanyCoupons3 {}", e.getMessage());
-            throw new CouponException(e.getMessage());
+            throw new CompanyException(e.getMessage());
         }
     }
-    public Company getCompanyDetails() throws CouponException {
+    public Company getCompanyDetails() throws CompanyException {
         logger.info("getCompanyDetails");
         try {
             return companiesDbDao.getSelectedCompany(companyID);
         } catch (CompanyException e) {
             logger.error("getCompanyDetails {}", e.getMessage());
-            throw new CouponException(e.getMessage());
+            throw new CompanyException(e.getMessage());
         }
     }
 }

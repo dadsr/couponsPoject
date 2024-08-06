@@ -37,7 +37,7 @@ class CompanyFacadeTest {
             coupons.get(0).setEndDate(Date.valueOf("2024-08-01"));
             comp.updateCoupon(coupons.get(0));
             System.out.println(" - success updating coupon number " + coupons.get(0).getId());
-        } catch (SQLException|CouponException e) {
+        } catch (SQLException|CompanyException|CouponException e) {
             throw new RuntimeException(e);
         }
 
@@ -69,7 +69,7 @@ class CompanyFacadeTest {
                 System.out.println(" - success");
             else
                 System.out.println(" - failed");
-        } catch (SQLException|CouponException e) {
+        } catch (SQLException | CompanyException e) {
             System.out.println(" - failed");
         }
     }
@@ -81,7 +81,7 @@ class CompanyFacadeTest {
                 System.out.println(" - success");
             else
                 System.out.println(" - failed");
-        } catch (SQLException|CouponException e) {
+        } catch (SQLException|CompanyException e) {
             System.out.println(" - failed");
         }
     }
@@ -93,7 +93,7 @@ class CompanyFacadeTest {
                 System.out.println(" - success");
             else
                 System.out.println(" - failed");
-        } catch (SQLException|CouponException e) {
+        } catch (SQLException|CompanyException e) {
             System.out.println(" - failed");
         }
     }

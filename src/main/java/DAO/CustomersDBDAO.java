@@ -56,10 +56,7 @@ public class CustomersDBDAO implements CustomersDAO {
             connection = connectionPool.getConnection();
             String query ="INSERT INTO customers (first_name,last_name,email,password,insert_date) VALUES (?,?,?,?,current_time());";
             PreparedStatement statement =connection.prepareStatement(query);
-            statement.setString(1, customer.getFirstName());
-            statement.setString(2, customer.getLastName());
-            statement.setString(3, customer.getEmail());
-            statement.setString(4,customer.getPassword());
+            customerToStatement(customer,statement);
             if(statement.execute()) {
                 logger.error("addCustomer - add failed");
                 throw new CustomerException("addCustomer failed");
@@ -81,12 +78,7 @@ public class CustomersDBDAO implements CustomersDAO {
             connection = connectionPool.getConnection();
             String query ="UPDATE customers SET first_name = ?,last_name = ?,email = ?,password =? WHERE id = ?;";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, customer.getFirstName());
-            statement.setString(2, customer.getLastName());
-            statement.setString(3, customer.getEmail());
-            statement.setString(4,customer.getPassword());
-            statement.setInt(5,customer.getId());
-
+            customerToStatement(customer,statement);
             if(statement.execute()) {
                 logger.error("updateCustomer - update failed");
                 throw new CustomerException("updateCustomer failed");
@@ -135,12 +127,7 @@ public class CustomersDBDAO implements CustomersDAO {
             ResultSet resultSet =statement.executeQuery();
             ArrayList<Customer> customers =new ArrayList<>();
             while (resultSet.next()){
-                customers.add(new Customer(resultSet.getInt(1),//int id
-                        resultSet.getString(2),// String firstName
-                        resultSet.getString(3),//String lastName
-                        resultSet.getString(4),//String email
-                        resultSet.getString(5),//String password
-                        getAllCouponsByCustomer(resultSet.getInt(1))));//ArrayList<BEANS.Coupon> coupons
+                customers.add(resultSetToCustomer(resultSet));
             }
             return customers;
         } catch (InterruptedException | SQLException e) {
@@ -163,12 +150,7 @@ public class CustomersDBDAO implements CustomersDAO {
             statement.setInt(1, customerID);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                return new Customer(resultSet.getInt(1),//int id
-                        resultSet.getString(2),// String firstName
-                        resultSet.getString(3),//String lastName
-                        resultSet.getString(4),//String email
-                        resultSet.getString(5),//String password
-                        getAllCouponsByCustomer(customerID));//ArrayList<BEANS.Coupon> coupons
+                return resultSetToCustomer(resultSet);
             }else {
                 logger.error("getSelectedCustomer - getting customer failed");
                 throw new CustomerException("getSelectedCustomer failed");
@@ -193,17 +175,7 @@ public class CustomersDBDAO implements CustomersDAO {
             ResultSet resultSet =statement.executeQuery();
             ArrayList<Coupon> coupons =new ArrayList<>();
             while (resultSet.next()){
-                coupons.add(new Coupon(resultSet.getInt(1),//int id
-                        resultSet.getInt(2),// int companyId
-                        CategoryEnum.fromId(resultSet.getInt(3)),// BEANS.CategoryEnum category
-                        resultSet.getString(4),// String title
-                        resultSet.getString(5),// String description
-                        resultSet.getDate(6),// Date startDate
-                        resultSet.getDate(7),// Date endDate
-                        resultSet.getInt(8),// int amount
-                        resultSet.getDouble(9),// Double price
-                        resultSet.getString(10)// String image);
-                ));
+                coupons.add(new CouponsDBDAO().resultSetToCoupon(resultSet));
             }
             return coupons;
         } catch (InterruptedException | SQLException e) {
@@ -248,12 +220,7 @@ public class CustomersDBDAO implements CustomersDAO {
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                return new Customer(resultSet.getInt(1),//int id
-                        resultSet.getString(2),// String firstName
-                        resultSet.getString(3),//String lastName
-                        resultSet.getString(4),//String email
-                        resultSet.getString(5),//String password
-                        getAllCouponsByCustomer(resultSet.getInt(1)));//ArrayList<BEANS.Coupon> coupons
+                return resultSetToCustomer(resultSet);
             }else {
                 logger.error("getSelectedCustomer - getting customer failed");
                 throw new CustomerException("getSelectedCustomer failed");
@@ -265,5 +232,21 @@ public class CustomersDBDAO implements CustomersDAO {
             if (connection != null)
                 connectionPool.restoreConnection(connection);
         }
+    }
+    /************************************ resultSetTo methods ***************************************************/
+    public void customerToStatement (Customer customer,PreparedStatement statement) throws SQLException {
+        statement.setString(1, customer.getFirstName());
+        statement.setString(2, customer.getLastName());
+        statement.setString(3, customer.getEmail());
+        statement.setString(4,customer.getPassword());
+        statement.setInt(5,customer.getId());
+    }
+    public Customer resultSetToCustomer (ResultSet resultSet) throws SQLException, CustomerException {
+        return new Customer(resultSet.getInt(1),//int id
+                resultSet.getString(2),// String firstName
+                resultSet.getString(3),//String lastName
+                resultSet.getString(4),//String email
+                resultSet.getString(5),//String password
+                getAllCouponsByCustomer(resultSet.getInt(1)));//ArrayList<BEANS.Coupon> coupons
     }
 }

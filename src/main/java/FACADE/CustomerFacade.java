@@ -24,12 +24,10 @@ public class CustomerFacade extends ClientFacade {
         logger.info("getCustomerID1");
         return customerID;
     }
-   /*
-   public void setCustomerID(int customerID) {
+    public void setCustomerID(int customerID) {
         this.customerID = customerID;
         logger.info("getCustomerID2");
     }
-    */
     @Override
     public int login(String email, String password) throws CustomerException {
         logger.info("login");

@@ -1,5 +1,6 @@
 package FACADE;
 
+import BEANS.CompanyException;
 import BEANS.CouponException;
 import BEANS.CustomerException;
 import DAO.CompaniesDBDAO;
@@ -31,7 +32,7 @@ public abstract class ClientFacade {
       * @param password the password of the user.
       * @return boolean indicating if the login was successful.
       */
-     public abstract int login(String email, String password) throws CouponException, CustomerException;
+     public abstract int login(String email, String password) throws CouponException, CustomerException, CompanyException;
 
 
 }
