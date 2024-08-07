@@ -6,32 +6,38 @@ import FACADE.CompanyFacade;
 import FACADE.CustomerFacade;
 import BEANS.ClientTypeEnum;
 import PROGRAM.LoginManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class mainTestsFlow {
+    protected static final Logger logger = LogManager.getLogger();
+
     public static void main(String[] args) {
-        Random rnd =new Random();
+
         LoginManager login =  LoginManager.getInstance();
         AdminFacade admin;
         try {
             //admin@admin.com & admin
             admin = (AdminFacade) login.login("admin@admin.com","admin", ClientTypeEnum.ADMINISTRATOR);
 
-            System.out.println("-------------------------- Adding new companies ------------------------------------");
-            addNewCompanies(admin,10);
+/*            System.out.println("-------------------------- Adding new companies ------------------------------------");
+            addNewCompanies(admin,20);
             System.out.println("-------------------------- Adding new coupons for company---------------------------");
-            addNewCoupons4Companies(login,admin,10);
+            addNewCoupons4Companies(login,admin,50);
             System.out.println("-------------------------- Adding new clients --------------------------------------");
-            addNewClients(admin,10);
+            addNewClients(admin,30);
             System.out.println("-------------------------- purchasing coupons --------------------------------------");
-            purchasingCoupons(login,admin,3);
+            */purchasingCoupons(login,admin,100);
             System.out.println("-------------------------- BIG SUCCESS --------------------------------------");
 
 
-        } catch (LoginException | CompanyException | CustomerException e) {
+        } catch (LoginException | CompanyException  e) {
             System.out.println(e.getMessage());
+        } catch (CustomerException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -101,7 +107,7 @@ public class mainTestsFlow {
         }
 
     }
-    private static void purchasingCoupons(LoginManager login,AdminFacade admin, int numOf) throws CustomerException, LoginException, CompanyException {
+    private static void purchasingCoupons(LoginManager login,AdminFacade admin, int numOf) throws LoginException, CompanyException, CustomerException {
         Random rnd =new Random();
         ArrayList<Customer> customers = admin.getAllCustomers();
         ArrayList<Company> cmps4cups = admin.getAllCompanies();
@@ -114,13 +120,16 @@ public class mainTestsFlow {
                 //In case there is a single coupon
                 if(bound > 0) {
                     bound -= ((bound == 1) ? 0 : 1);
-                    System.out.println("COMP " + cmps4cups.get(bound).getId() + " CUPS " + bound );
                     Coupon cup = tempCompCups.get(bound);
-                    clintF.purchaseCoupons(cup);
+                    try {
+                        clintF.purchaseCoupons(cup);
+                    } catch (CustomerException e) {
+                        logger.info("purchaseCoupons" +e.getMessage());
+
+                    }
                 }
             }
         }
     }
-///////////////////////////////////////
 }
 

@@ -14,7 +14,7 @@ import java.util.List;
  * This implementation ensures a maximum of 20 concurrent connections.
  */
 public class ConnectionPool {
-    private final int MAX_CONNECTIONS =20;
+    private final int MAX_CONNECTIONS =150;
     private final String URL ="jdbc:mysql://localhost:3306/coupons_project";
     private final String USER ="root";
     private final String PASSWORD ="admin";
@@ -51,7 +51,7 @@ public class ConnectionPool {
      * @throws InterruptedException if the current thread is interrupted while waiting.
      */
     public synchronized Connection getConnection() throws InterruptedException {
-        logger.info("getConnection");
+        logger.info("getConnection{}", connections.size());
         while (connections.size()==0)
                 wait();
         Connection connection =connections.get(connections.size()-1);
@@ -63,7 +63,7 @@ public class ConnectionPool {
      * @param connection the connection to be restored.
      */
     public synchronized void restoreConnection (Connection connection){
-        logger.info("restoreConnection");
+        logger.info("restoreConnection{}", connections.size());
         connections.add(connection);
         notifyAll();
     }

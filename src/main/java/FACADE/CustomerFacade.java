@@ -38,19 +38,19 @@ public class CustomerFacade extends ClientFacade {
             throw new CustomerException(e.getMessage());
         }
     }
-    public void purchaseCoupons(Coupon coupon){
+    public void purchaseCoupons(Coupon coupon) throws CustomerException {
         logger.info("purchaseCoupons");
         try {
             //Checking that there is no existing purchase
-            if(!couponsDbDao.checkCouponPurchase(customerID,coupon.getId()))
-                couponsDbDao.addCouponPurchase(customerID,coupon.getId());
-            else {
-                logger.error("purchaseCoupons - purchase failed");
-                throw new CouponException("purchaseCoupons failed");
+            if(couponsDbDao.checkCouponPurchase(customerID,coupon.getId())) {
+                logger.info("checkCouponPurchase returns true");
+                couponsDbDao.addCouponPurchase(customerID, coupon.getId());
+            }else {
+                logger.info("checkCouponPurchase returns false");
             }
         } catch (CouponException e) {
             logger.error("purchaseCoupons {}", e.getMessage());
-            throw new RuntimeException(e);
+            throw new CustomerException(e.getMessage());
         }
     }
     public ArrayList<Coupon> getCustomerCoupons() throws CustomerException {
