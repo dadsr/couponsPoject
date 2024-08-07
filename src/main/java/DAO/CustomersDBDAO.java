@@ -230,7 +230,8 @@ public class CustomersDBDAO implements CustomersDAO {
         statement.setString(2, customer.getLastName());
         statement.setString(3, customer.getEmail());
         statement.setString(4,customer.getPassword());
-        statement.setInt(5,customer.getId());
+        if(customer.getId()>0)
+            statement.setInt(5,customer.getId());
     }
     public Customer resultSetToCustomer (ResultSet resultSet) throws SQLException, CustomerException {
         return new Customer(resultSet.getInt(1),//int id

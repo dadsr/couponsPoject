@@ -112,5 +112,8 @@ CHANGE COLUMN `first_date` `first_name` VARCHAR(45) NOT NULL ;
 ALTER TABLE `coupons_project`.`coupons` 
 ADD COLUMN `insert_date` DATETIME NULL AFTER `image`;
   
+ALTER TABLE `coupons_project`.`customers_vs_coupons`
+DROP INDEX `customer_id_UNIQUE` ;
+;
 
 

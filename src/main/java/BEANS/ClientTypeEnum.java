@@ -1,7 +1,4 @@
-package PROGRAM;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package BEANS;
 
 public enum ClientTypeEnum {
     ADMINISTRATOR(1),

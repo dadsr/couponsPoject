@@ -164,6 +164,12 @@ public class CouponsDBDAO implements CouponsDAO {
             }
         } catch (InterruptedException | SQLException e) {
             logger.error("addCouponPurchase {}", e.getMessage());
+           //todo remove
+            try {
+                System.out.println("customerId " + customerId + " couponID " + couponID + " - " +new CouponsDBDAO().checkCouponPurchase(customerId,couponID));
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new CouponException(e.getMessage());
         } finally {
             // Always restore the connection to the pool in the finally block

@@ -41,7 +41,8 @@ public class CustomerFacade extends ClientFacade {
     public void purchaseCoupons(Coupon coupon){
         logger.info("purchaseCoupons");
         try {
-            if(couponsDbDao.checkCouponPurchase(customerID,coupon.getId()))
+            //Checking that there is no existing purchase
+            if(!couponsDbDao.checkCouponPurchase(customerID,coupon.getId()))
                 couponsDbDao.addCouponPurchase(customerID,coupon.getId());
             else {
                 logger.error("purchaseCoupons - purchase failed");

@@ -1,7 +1,7 @@
 package PROGRAM;
 
+import BEANS.ClientTypeEnum;
 import BEANS.CompanyException;
-import BEANS.CouponException;
 import BEANS.CustomerException;
 import BEANS.LoginException;
 import FACADE.AdminFacade;
@@ -27,12 +27,13 @@ public class LoginManager {
             instance = new LoginManager();
         return instance;
     }
+
     public ClientFacade login (String email, String password , ClientTypeEnum clientType) throws LoginException {
         logger.info("login");
         try {
             switch (clientType.name()) {
                 case "ADMINISTRATOR": {
-                    AdminFacade admin = null;
+                    AdminFacade admin;
                     admin = new AdminFacade();
                     return (admin.login(email, password) == 1) ? admin : null;
                 }
