@@ -14,7 +14,7 @@ import java.util.List;
  * This implementation ensures a maximum of 20 concurrent connections.
  */
 public class ConnectionPool {
-    private final int MAX_CONNECTIONS =150;
+    private final int MAX_CONNECTIONS =20;
     private final String URL ="jdbc:mysql://localhost:3306/coupons_project";
     private final String USER ="root";
     private final String PASSWORD ="admin";

@@ -11,6 +11,7 @@ public class CouponFacade extends ClientFacade{
     protected static final Logger logger = LogManager.getLogger();
 
     public CouponFacade() throws SQLException {
+        logger.info("CouponFacade");
     }
 
     @Override

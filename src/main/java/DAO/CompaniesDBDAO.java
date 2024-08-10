@@ -72,7 +72,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
-            String query ="INSERT INTO companies (`name`,`email`,`password`,`insert_date`) VALUES (?,?,?,current_time());";
+            String query ="INSERT INTO companies (`email`,`password`,`name`,`insert_date`) VALUES (?,?,?,current_time());";
             PreparedStatement statement =connection.prepareStatement(query);
             companyToStatement(company,statement);
             if(statement.execute()) {
@@ -222,10 +222,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
     /************************************ resultSetTo methods ***************************************************/
     public void companyToStatement(Company company, PreparedStatement statement) throws SQLException {
-        statement.setString(1, company.getName());
-        statement.setString(2, company.getEmail());
-        statement.setString(3, company.getPassword());
 
+        statement.setString(1, company.getEmail());
+        statement.setString(2, company.getPassword());
+        if(company.getId()==0)
+            statement.setString(3, company.getName());//insert
+        else
+            statement.setInt(3, company.getId());//update
     }
     public Company resultSetToCompany(ResultSet resultSet) throws CompanyException {
         int companyId = 0;

@@ -10,9 +10,10 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AdminFacadeTest {
 
-    //   void login()  - tested on LoginManagerTest
+class AdminFacadeTest {
+    int tstId = 2412;//getOneCompany + addCompany
+    //void login()  - tested on LoginManagerTest
 
     @Test
     void getOneCompany() {
@@ -28,7 +29,6 @@ class AdminFacadeTest {
         }
 
         System.out.print("getting an existing company ");
-        int tstId = 33;
         Company company =null;
         try {
             AdminFacade admin =new AdminFacade();
@@ -49,7 +49,6 @@ class AdminFacadeTest {
         try {
             AdminFacade admin  = new AdminFacade();
             System.out.print("Adding existing company");
-            int tstId = 33;
             Company company = admin.getOneCompany(tstId);
             admin.addCompany(company);
             System.out.print("Adding new company + getOneCompany by email & password ");

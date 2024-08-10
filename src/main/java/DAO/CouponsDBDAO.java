@@ -14,8 +14,8 @@ public class CouponsDBDAO implements CouponsDAO {
     protected static final Logger logger = LogManager.getLogger();
 
     public CouponsDBDAO() throws SQLException {
-        logger.info("CouponsDBDAO");
         connectionPool = ConnectionPool.getInstance();
+        logger.info("CouponsDBDAO");
     }
 
     @Override
@@ -25,7 +25,7 @@ public class CouponsDBDAO implements CouponsDAO {
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
-            String query = "INSERT INTO coupons (company_id,category_id,title,description,start_date,end_date,amount,price,image,insert_date) VALUES (?,?,?,?,?,?,?,?,?,current_time());";
+            String query = "INSERT INTO coupons (category_id,title,description,start_date,end_date,amount,price,image,company_id,insert_date) VALUES (?,?,?,?,?,?,?,?,?,current_time());";
             PreparedStatement statement = connection.prepareStatement(query);
             couponToStatement(coupon,statement);
             if (statement.execute()) {
@@ -513,15 +513,20 @@ public class CouponsDBDAO implements CouponsDAO {
     }
     /************************************ resultSetTo methods ***************************************************/
     public void couponToStatement(Coupon coupon,PreparedStatement statement) throws SQLException {
-        statement.setInt(1, coupon.getCompanyId());//company_id
-        statement.setInt(2, coupon.getCategory().getId());//category_id
-        statement.setString(3, coupon.getTitle());//title
-        statement.setString(4, coupon.getDescription());//description
-        statement.setDate(5, coupon.getStartDate());//start_date
-        statement.setDate(6, coupon.getEndDate());//end_date
-        statement.setInt(7, coupon.getAmount());//amount
-        statement.setDouble(8, coupon.getPrice());//price
-        statement.setString(9, coupon.getImage());//image
+
+
+        statement.setInt(1, coupon.getCategory().getId());//category_id
+        statement.setString(2, coupon.getTitle());//title
+        statement.setString(3, coupon.getDescription());//description
+        statement.setDate(4, coupon.getStartDate());//start_date
+        statement.setDate(5, coupon.getEndDate());//end_date
+        statement.setInt(6, coupon.getAmount());//amount
+        statement.setDouble(7, coupon.getPrice());//price
+        statement.setString(8, coupon.getImage());//image
+        if(coupon.getId()==0)
+            statement.setInt(9, coupon.getCompanyId());//insert
+        else
+            statement.setInt(9, coupon.getId());//update
     }
     public Coupon resultSetToCoupon(ResultSet resultSet) throws SQLException {
         return new Coupon(

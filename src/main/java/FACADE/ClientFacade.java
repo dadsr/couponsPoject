@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 
-//import static FACADE.AdminFacade.logger;
 
 public abstract class ClientFacade {
      protected CompaniesDBDAO companiesDbDao ;

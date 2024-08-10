@@ -31,15 +31,15 @@ public class mainTestsFlow {
             expirationJobThread.join();
             expirationJobThread.start();
 
-            System.out.println("-------------------------- Adding new companies ------------------------------------");
+           System.out.println("-------------------------- Adding new companies ------------------------------------");
             //admin@admin.com & admin
             admin = (AdminFacade) login.login("admin@admin.com","admin", ClientTypeEnum.ADMINISTRATOR);
 
-            addNewCompanies(admin,100);
+            addNewCompanies(admin,20);
             System.out.println("-------------------------- Adding new coupons for company---------------------------");
-            addNewCoupons4Companies(login,admin,100);
+            addNewCoupons4Companies(login,admin,20);
             System.out.println("-------------------------- Adding new clients --------------------------------------");
-            addNewClients(admin,100);
+            addNewClients(admin,20);
             System.out.println("-------------------------- purchasing coupons --------------------------------------");
             purchasingCoupons(login,admin,20);
 
@@ -153,4 +153,3 @@ public class mainTestsFlow {
     }
     /**/
 }
-
