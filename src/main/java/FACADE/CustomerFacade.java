@@ -1,12 +1,12 @@
 package FACADE;
 
 import BEANS.*;
+import BEANS.CouponException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import static FACADE.AdminFacade.logger;
 
 public class CustomerFacade extends ClientFacade {
     private int customerID;
@@ -18,19 +18,19 @@ public class CustomerFacade extends ClientFacade {
     }
     public CustomerFacade(int customerID) throws SQLException {
         this.customerID = customerID;
-        logger.info("CustomerFacade2");
+        logger.info("CustomerFacade2{}", customerID);
     }
     public int getCustomerID() {
-        logger.info("getCustomerID1");
+        logger.info("getCustomerID1{}", customerID);
         return customerID;
     }
     public void setCustomerID(int customerID) {
         this.customerID = customerID;
-        logger.info("getCustomerID2");
+        logger.info("getCustomerID2{}", customerID);
     }
     @Override
     public int login(String email, String password) throws CustomerException {
-        logger.info("login");
+        logger.info("login{}", email);
         try {
             return customersDbDao.isCustomerExists(email,password);
         } catch (CustomerException e) {
@@ -39,10 +39,10 @@ public class CustomerFacade extends ClientFacade {
         }
     }
     public void purchaseCoupons(Coupon coupon) throws CustomerException {
-        logger.info("purchaseCoupons");
+        logger.info("purchaseCoupons{}", coupon.getId());
         try {
-            //Checking that there is no existing purchase
-            if(couponsDbDao.checkCouponPurchase(customerID,coupon.getId())) {
+            //Checking that there is no existing purchase == false
+            if(!couponsDbDao.checkCouponPurchase(customerID,coupon.getId())) {
                 logger.info("checkCouponPurchase returns true");
                 couponsDbDao.addCouponPurchase(customerID, coupon.getId());
             }else {
@@ -54,7 +54,7 @@ public class CustomerFacade extends ClientFacade {
         }
     }
     public ArrayList<Coupon> getCustomerCoupons() throws CustomerException {
-        logger.info("getCustomerCoupons1");
+        logger.info("getCustomerCoupons1{}", customerID);
         try {
             return couponsDbDao.allCouponsByCustomer(customerID);
         } catch (CouponException e) {
@@ -62,24 +62,22 @@ public class CustomerFacade extends ClientFacade {
             throw new CustomerException(e.getMessage());
         }
     }
-    public ArrayList<Coupon> getCustomerCoupons(CategoryEnum category) throws CustomerException {
-        logger.info("getCustomerCoupons2");
+    public ArrayList<Coupon> getCustomerCoupons (CategoryEnum category) throws CustomerException {
+        logger.info("getCustomerCoupons2{}", category);
         try {
             return couponsDbDao.allCouponsByCustomerAndCategory(customerID, category.getId());
         } catch (CouponException e) {
             logger.error("getCustomerCoupons2 {}", e.getMessage());
             throw new CustomerException(e.getMessage());
-
         }
     }
     public ArrayList<Coupon> getCustomerCoupons(double maxPrice) throws CustomerException {
-        logger.info("getCustomerCoupons3");
+        logger.info("getCustomerCoupons3{}", maxPrice);
         try {
             return couponsDbDao.allCouponsByCustomerAndMaxPrice(customerID,maxPrice);
         } catch (CouponException e) {
             logger.error("getCustomerCoupons3 {}", e.getMessage());
             throw new CustomerException(e.getMessage());
-
         }
     }
     public Customer getCustomerDetails() throws CustomerException {
@@ -89,7 +87,6 @@ public class CustomerFacade extends ClientFacade {
         } catch (CustomerException e) {
             logger.error("getCustomerDetails {}", e.getMessage());
             throw new CustomerException(e.getMessage());
-
         }
     }
 }

@@ -8,7 +8,7 @@
     </Properties>
 
     <Appenders>
-        <RollingFile name="fileLogger" fileName="${basePath}/app-info.log" filePattern="${basePath}/app-info-%d{yyyy-MM-dd}.log">
+        <RollingFile name="fileLogger" fileName="${APP_LOG_ROOT}/app-info.log" filePattern="${APP_LOG_ROOT}/app-info-%d{yyyy-MM-dd}.log">
             <PatternLayout>
                 <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
             </PatternLayout>
@@ -18,17 +18,17 @@
         </RollingFile>
 
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout	pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
         </Console>
 
     </Appenders>
 
     <Loggers>
         <Logger name="com.garbageCollectors" level="debug" additivity="true">
-            <appender-ref ref="fileLogger" level="debug" />
+            <AppenderRef ref="fileLogger" />
         </Logger>
         <Root level="debug" additivity="false">
-            <appender-ref ref="fileLogger" />
+            <AppenderRef ref="fileLogger" />
         </Root>
     </Loggers>
 

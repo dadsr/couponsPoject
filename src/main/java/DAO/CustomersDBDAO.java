@@ -25,7 +25,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     @Override
     public int isCustomerExists(String email, String password) throws CustomerException {
-        logger.info("isCustomerExists");
+        logger.info("isCustomerExists{}", email);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -34,8 +34,11 @@ public class CustomersDBDAO implements CustomersDAO {
             statement.setString(1,email);
             statement.setString(2,password);
             ResultSet resultSet =statement.executeQuery();
-            if (resultSet.next())
+            if (resultSet.next()) {
+                logger.info("isCustomerExists -{}", resultSet.getInt(1));
                 return resultSet.getInt(1);//customer id
+            }
+            logger.info("isCustomerExists - not found {}", email);
             return 0;//false
 
         } catch (InterruptedException | SQLException e) {
@@ -48,7 +51,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     @Override
     public void addCustomer(Customer customer) throws CustomerException {
-        logger.info("addCustomer");
+        logger.info("addCustomer{}{}", customer.getFirstName(), customer.getLastName());
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -56,7 +59,7 @@ public class CustomersDBDAO implements CustomersDAO {
             PreparedStatement statement =connection.prepareStatement(query);
             customerToStatement(customer,statement);
             if(statement.execute()) {
-                logger.error("addCustomer - add failed");
+                logger.error("addCustomer - add failed{}{}", customer.getFirstName(), customer.getLastName());
                 throw new CustomerException("addCustomer failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -69,7 +72,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     @Override
     public void updateCustomer(Customer customer) throws CustomerException {
-        logger.info("updateCustomer");
+        logger.info("updateCustomer{}{}", customer.getFirstName(), customer.getLastName());
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -77,7 +80,7 @@ public class CustomersDBDAO implements CustomersDAO {
             PreparedStatement statement = connection.prepareStatement(query);
             customerToStatement(customer,statement);
             if(statement.execute()) {
-                logger.error("updateCustomer - update failed");
+                logger.error("updateCustomer - update failed{}{}", customer.getFirstName(), customer.getLastName());
                 throw new CustomerException("updateCustomer failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -91,7 +94,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     @Override
     public void deleteCustomer(int customerID) throws CustomerException {
-        logger.info("deleteCustomer");
+        logger.info("deleteCustomer{}", customerID);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -99,7 +102,7 @@ public class CustomersDBDAO implements CustomersDAO {
             PreparedStatement statement =connection.prepareStatement(query);
             statement.setInt(1, customerID);
             if(statement.execute()) {
-                logger.error("deleteCustomer - delete failed");
+                logger.error("deleteCustomer - delete failed{}", customerID);
                 throw new CustomerException("deleteCustomer failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -135,7 +138,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     @Override
     public Customer getSelectedCustomer(int customerID) throws CustomerException {
-        logger.info("getSelectedCustomer");
+        logger.info("getSelectedCustomer{}", customerID);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -146,7 +149,7 @@ public class CustomersDBDAO implements CustomersDAO {
             if(resultSet.next()){
                 return resultSetToCustomer(resultSet);
             }else {
-                logger.error("getSelectedCustomer - getting customer failed");
+                logger.error("getSelectedCustomer - getting customer failed{}", customerID);
                 throw new CustomerException("getSelectedCustomer failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -158,7 +161,7 @@ public class CustomersDBDAO implements CustomersDAO {
         }
     }
     private ArrayList<Coupon> getAllCouponsByCustomer(int customerID) throws CustomerException {
-        logger.info("getAllCouponsByCustomer");
+        logger.info("getAllCouponsByCustomer{}", customerID);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -182,7 +185,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     /************************************ check by methods ***************************************************/
     public boolean isCustomerExists(String email) throws CustomerException {
-        logger.info("isCustomerExists");
+        logger.info("isCustomerExists{}", email);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -201,7 +204,7 @@ public class CustomersDBDAO implements CustomersDAO {
     }
     /******************************************************************************************************** */
     public Customer getSelectedCustomer(String email, String password) throws CustomerException {
-        logger.info("getSelectedCustomer");
+        logger.info("getSelectedCustomer{}", email);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
@@ -213,7 +216,7 @@ public class CustomersDBDAO implements CustomersDAO {
             if(resultSet.next()){
                 return resultSetToCustomer(resultSet);
             }else {
-                logger.error("getSelectedCustomer - getting customer failed");
+                logger.error("getSelectedCustomer - getting customer failed{}", email);
                 throw new CustomerException("getSelectedCustomer failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -231,7 +234,7 @@ public class CustomersDBDAO implements CustomersDAO {
         statement.setString(3, customer.getEmail());
         statement.setString(4,customer.getPassword());
         if(customer.getId()>0)
-            statement.setInt(5,customer.getId());
+            statement.setInt(5, customer.getId());
     }
     public Customer resultSetToCustomer (ResultSet resultSet) throws SQLException, CustomerException {
         return new Customer(resultSet.getInt(1),//int id

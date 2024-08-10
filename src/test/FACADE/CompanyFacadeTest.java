@@ -1,13 +1,12 @@
 package FACADE;
 
 import BEANS.*;
+import BEANS.CouponException;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CompanyFacadeTest {
 
@@ -21,7 +20,7 @@ class CompanyFacadeTest {
         try {
             new CompanyFacade().addCoupon(newCoupon);
             System.out.println(" - success");
-        } catch (SQLException|CouponException e) {
+        } catch (SQLException | CouponException e) {
             System.out.println(" - failed");
         }
     }

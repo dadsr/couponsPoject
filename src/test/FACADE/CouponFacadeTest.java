@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class CouponFacadeTest {
 
     //   void login()  - tested on LoginManagerTest

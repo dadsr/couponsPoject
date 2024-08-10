@@ -1,13 +1,5 @@
 package PROGRAM;
 
-import BEANS.CouponException;
-import FACADE.ClientFacade;
-import org.junit.jupiter.api.Test;
-
-import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class LoginManagerTest {
 /*
     @Test

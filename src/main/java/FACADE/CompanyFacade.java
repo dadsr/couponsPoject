@@ -1,13 +1,12 @@
 package FACADE;
 
 import BEANS.*;
+import BEANS.CouponException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import static FACADE.AdminFacade.logger;
 
 public class CompanyFacade  extends ClientFacade {
     private int companyID;
@@ -18,7 +17,7 @@ public class CompanyFacade  extends ClientFacade {
     }
     public CompanyFacade(int companyID) throws SQLException {
         this.companyID = companyID;
-        logger.info("CompanyFacade");
+        logger.info("CompanyFacade{}", companyID);
     }
     public int getCompanyID() {
         logger.info("getCompanyID");
@@ -31,7 +30,7 @@ public class CompanyFacade  extends ClientFacade {
 
     @Override
     public int login(String email, String password) throws CompanyException {
-        logger.info("login");
+        logger.info("login{}", email);
         try {
             return companiesDbDao.isCompanyExists(email,password);
         } catch (CompanyException e) {
@@ -40,7 +39,7 @@ public class CompanyFacade  extends ClientFacade {
         }
     }
     public void addCoupon(Coupon coupon) throws CouponException {
-        logger.info("addCoupon");
+        logger.info("addCoupon{}", coupon.getTitle());
         try {
             couponsDbDao.addCoupon(coupon);
         } catch (CouponException e) {
@@ -48,7 +47,7 @@ public class CompanyFacade  extends ClientFacade {
             throw new CouponException(e.getMessage());        }
     }
     public void updateCoupon(Coupon coupon) throws CouponException {
-        logger.info("updateCoupon");
+        logger.info("updateCoupon{}", coupon.getTitle());
         try {
             couponsDbDao.updateCoupon(coupon);
         } catch (CouponException e) {
@@ -57,7 +56,7 @@ public class CompanyFacade  extends ClientFacade {
         }
     }
     public void deleteCoupon(int couponID) throws CouponException {
-        logger.info("deleteCoupon");
+        logger.info("deleteCoupon{}", couponID);
         try {
             couponsDbDao.deletePurchasesByCoupon(couponID);
             couponsDbDao.deleteCoupon(couponID);
@@ -67,7 +66,7 @@ public class CompanyFacade  extends ClientFacade {
         }
     }
     public ArrayList<Coupon> getCompanyCoupons() throws CompanyException {
-        logger.info("getCompanyCoupons1");
+        logger.info("getCompanyCoupons1{}", companyID);
         try {
             return couponsDbDao.allCouponsByCompany(companyID);
         } catch (CouponException e) {
@@ -76,7 +75,7 @@ public class CompanyFacade  extends ClientFacade {
         }
     }
     public ArrayList<Coupon> getCompanyCoupons(CategoryEnum category) throws CompanyException {
-        logger.info("getCompanyCoupons2");
+        logger.info("getCompanyCoupons2{}", category);
         try {
             return couponsDbDao.allCouponsByCompanyAndCategory(companyID,category.getId());
         } catch (CouponException e) {
@@ -85,7 +84,7 @@ public class CompanyFacade  extends ClientFacade {
         }
     }
     public ArrayList<Coupon> getCompanyCoupons(Double maxPrice) throws CompanyException {
-        logger.info("getCompanyCoupons3");
+        logger.info("getCompanyCoupons3{}", maxPrice);
         try {
             return couponsDbDao.allCouponsByCompanyAndMaxPrice(companyID,maxPrice);
         } catch (CouponException e) {

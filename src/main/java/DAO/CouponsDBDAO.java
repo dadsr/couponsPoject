@@ -21,7 +21,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     // Method to add a new coupon to the database
     public void addCoupon(Coupon coupon) throws CouponException {
-        logger.info("addCoupon");
+        logger.info("addCoupon {}", coupon.getTitle());
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -29,7 +29,7 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query);
             couponToStatement(coupon,statement);
             if (statement.execute()) {
-                logger.error("addCoupon - adding failed");
+                logger.error("addCoupon - adding failed {}", coupon.getTitle());
                 throw new CouponException("addCoupon failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -44,7 +44,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     // Method to update an existing coupon in the database
     public void updateCoupon(Coupon coupon) throws CouponException {
-        logger.info("updateCoupon");
+        logger.info("updateCoupon {}", coupon.getTitle());
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -52,7 +52,7 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query);
             couponToStatement(coupon,statement);
             if (statement.execute()) {
-                logger.error("updateCoupon - updating failed");
+                logger.error("updateCoupon - updating failed {}", coupon.getTitle());
                 throw new CouponException("updateCoupon failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -67,7 +67,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     // Method to delete a coupon from the database
     public void deleteCoupon(int couponID) throws CouponException {
-        logger.info("deleteCoupon");
+        logger.info("deleteCoupon {}", couponID);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -75,7 +75,7 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, couponID);
             if (statement.execute()) {
-                logger.error("deleteCoupon - delete failed");
+                logger.error("deleteCoupon - delete failed {}", couponID);
                 throw new CouponException("deleteCoupon failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -115,7 +115,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     // Method to retrieve a specific coupon from the database by its ID
     public Coupon getSelectedCoupon(int couponID) throws CouponException {
-        logger.info("getSelectedCoupon");
+        logger.info("getSelectedCoupon {}", couponID);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -126,7 +126,7 @@ public class CouponsDBDAO implements CouponsDAO {
             if (resultSet.next()) {
                 return (resultSetToCoupon(resultSet));
             } else {
-                logger.error("getSelectedCoupon - getting coupon failed");
+                logger.error("getSelectedCoupon - getting coupon failed {}", couponID);
                 throw new CouponException("getSelectedCoupon failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -141,7 +141,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     // Method to record a coupon purchase by a customer and update the coupon's amount
     public void addCouponPurchase(int customerId, int couponID) throws CouponException {
-        logger.info("addCouponPurchase");
+        logger.info("addCouponPurchase {} {}", couponID, customerId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -149,21 +149,14 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query1);
             statement.setInt(1, customerId);
             statement.setInt(2, couponID);
-            //todo remove
-            if(!new CouponsDBDAO().checkCouponPurchase(customerId,couponID)) {
-                if (statement.execute())
-                    throw new CouponException("addCouponPurchase failed");
-                else {
-                    String query2 = "UPDATE coupons SET amount = amount - 1 WHERE id = ? ;";
-                    statement = connection.prepareStatement(query2);
-                    Coupon coupon = getSelectedCoupon(couponID);
-                    // Set the values for the prepared statement to decrease the coupon's amount
-                    statement.setInt(1, couponID);
-                    if (statement.execute()) {
-                        logger.error("addCouponPurchase - adding purchase failed");
-                        throw new CouponException("addCouponPurchase failed");
-                    }
-                }
+            if(!statement.execute()){
+                String query2 = "UPDATE coupons SET amount = amount - 1 WHERE id = ? ;";
+                statement = connection.prepareStatement(query2);
+                Coupon coupon = getSelectedCoupon(couponID);
+                // Set the values for the prepared statement to decrease the coupon's amount
+                statement.setInt(1, couponID);
+                if(!statement.execute())
+                    logger.info("addCouponPurchase {} {} - success", couponID, customerId);
             }
         } catch (InterruptedException | SQLException e) {
             logger.error("addCouponPurchase {}", e.getMessage());
@@ -177,7 +170,7 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     // Method to delete a coupon purchase by a customer and update the coupon's amount
     public void deleteCouponPurchase(int customerId, int couponID) throws CouponException {
-        logger.info("deleteCouponPurchase");
+        logger.info("deleteCouponPurchase {} {}", customerId, couponID);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -185,9 +178,10 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query1);
             statement.setInt(1, customerId);
             statement.setInt(2, couponID);
-            if (statement.execute())
+            if (statement.execute()) {
+                logger.error("deleteCouponPurchase failed {} {}", customerId, couponID);
                 throw new CouponException("deleteCouponPurchase failed");
-            else {
+            }else {
                 String query2 = "UPDATE coupons SET amount = amount - 1 WHERE id = ? ;";
                 statement = connection.prepareStatement(query2);
                 Coupon coupon = getSelectedCoupon(couponID);
@@ -196,7 +190,7 @@ public class CouponsDBDAO implements CouponsDAO {
                 statement.setInt(2, couponID);
 
                 if (statement.execute()) {
-                    logger.error("deleteCouponPurchase - deleting purchase failed");
+                    logger.error("deleteCouponPurchase - deleting purchase failed{}", couponID);
                     throw new CouponException("deleteCouponPurchase failed");
                 }
             }
@@ -211,16 +205,17 @@ public class CouponsDBDAO implements CouponsDAO {
     }
     /************************************ delete by methods ***************************************************/
     public void deletePurchasesByCompany(int companyId) throws CouponException {
-        logger.info("deletePurchasesByCompany");
+        logger.info("deletePurchasesByCompany {}", companyId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
             String query1 = "DELETE FROM customers_vs_coupons WHERE coupon_id IN (SELECT id FROM coupons WHERE company_id = ?);";
             PreparedStatement statement = connection.prepareStatement(query1);
             statement.setInt(1, companyId);
-            if (statement.execute())
-                logger.error("deletePurchasesByCompany - deleting purchases failed");
-            throw new CouponException("deletePurchasesByCompany failed");
+            if (statement.execute()) {
+                logger.error("deletePurchasesByCompany - deleting purchases failed {}", companyId);
+                throw new CouponException("deletePurchasesByCompany failed");
+            }
         } catch (InterruptedException | SQLException e) {
             logger.error("deletePurchasesByCompany {}", e.getMessage());
             throw new CouponException(e.getMessage());
@@ -231,7 +226,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public void deleteCouponsByCompany(int companyId) throws CouponException {
-        logger.info("deleteCouponsByCompany");
+        logger.info("deleteCouponsByCompany {}", companyId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -239,7 +234,7 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query1);
             statement.setInt(1, companyId);
             if (statement.execute()) {
-                logger.error("deleteCouponsByCompany - deleting coupons failed");
+                logger.error("deleteCouponsByCompany - deleting coupons failed {}", companyId);
                 throw new CouponException("deleteCouponsByCompany failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -252,21 +247,23 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public void deletePurchasesByCustomer(int customerID) throws CouponException {
-        logger.info("deletePurchasesByCustomer");
+        logger.info("deletePurchasesByCustomer {}", customerID);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
             String query1 = "UPDATE coupons SET amount = amount + 1 WHERE id IN (SELECT coupon_id FROM customers_vs_coupons WHERE customer_id=?);";
             PreparedStatement statement = connection.prepareStatement(query1);
             statement.setInt(1, customerID);
-            if (statement.execute())
+            if (statement.execute()) {
+                logger.error("deletePurchasesByCustomer - update amount failed {}", customerID);
                 throw new CouponException("deletePurchasesByCustomer failed");
+            }
             else {
                 query1 = "DELETE FROM customers_vs_coupons WHERE customer_id =?;";
                 statement = connection.prepareStatement(query1);
                 statement.setInt(1, customerID);
                 if (statement.execute()){
-                    logger.error("deletePurchasesByCustomer - deleting purchases failed");
+                    logger.error("deletePurchasesByCustomer - deleting purchases failed {}", customerID);
                     throw new CouponException("deletePurchasesByCustomer failed");
                 }
             }
@@ -280,7 +277,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public void deletePurchasesByCoupon(int couponID) throws CouponException {
-        logger.info("deletePurchasesByCoupon");
+        logger.info("deletePurchasesByCoupon {}", couponID);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -288,7 +285,7 @@ public class CouponsDBDAO implements CouponsDAO {
             PreparedStatement statement = connection.prepareStatement(query1);
             statement.setInt(1, couponID);
             if (statement.execute()) {
-                logger.error("deletePurchasesByCoupon - deleting purchases failed");
+                logger.error("deletePurchasesByCoupon - deleting purchases failed"+couponID);
                 throw new CouponException("deletePurchasesByCoupon failed");
             }
         } catch (InterruptedException | SQLException e) {
@@ -329,7 +326,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
     /************************************ get by methods ***************************************************/
     public ArrayList<Coupon> allCouponsByCompany(int companyId) throws CouponException {
-        logger.info("allCouponsByCompany");
+        logger.info("allCouponsByCompany {}", companyId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -352,7 +349,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public ArrayList<Coupon> allCouponsByCompanyAndCategory(int companyId, int categoryId) throws CouponException {
-        logger.info("allCouponsByCompanyAndCategory");
+        logger.info("allCouponsByCompanyAndCategory {} {}", companyId, categoryId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -376,7 +373,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public ArrayList<Coupon> allCouponsByCompanyAndMaxPrice(int companyId, double maxPrice) throws CouponException {
-        logger.info("allCouponsByCompanyAndMaxPrice");
+        logger.info("allCouponsByCompanyAndMaxPrice {} {}", companyId, maxPrice);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -400,7 +397,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public ArrayList<Coupon> allCouponsByCustomer(int customerId) throws CouponException {
-        logger.info("allCouponsByCustomer");
+        logger.info("allCouponsByCustomer {}", customerId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -423,7 +420,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public ArrayList<Coupon> allCouponsByCustomerAndCategory(int customerId, int categoryId) throws CouponException {
-        logger.info("allCouponsByCustomerAndCategory");
+        logger.info("allCouponsByCustomerAndCategory {} {}", customerId, categoryId);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -447,7 +444,7 @@ public class CouponsDBDAO implements CouponsDAO {
         }
     }
     public ArrayList<Coupon> allCouponsByCustomerAndMaxPrice(int customerId, double maxPrice) throws CouponException {
-        logger.info("allCouponsByCustomerAndMaxPrice");
+        logger.info("allCouponsByCustomerAndMaxPrice {} {}", customerId, maxPrice);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
@@ -470,23 +467,41 @@ public class CouponsDBDAO implements CouponsDAO {
                 connectionPool.restoreConnection(connection);
         }
     }
+
     /************************************ check by methods ***************************************************/
+
+    /**
+    * return false when no such purchase
+    * */
     public boolean checkCouponPurchase(int customerID, int couponID) throws CouponException {
-        logger.info("checkCouponPurchase");
-        Connection connection = null ;
+        logger.info("checkCouponPurchase {} {}", customerID, couponID);
+        Connection connection = null;
         try {
             connection = connectionPool.getConnection();
             String query = "SELECT * FROM customers_vs_coupons WHERE customer_id =? AND coupon_id =? ;";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, customerID);
             statement.setInt(2, couponID);
-            if (!statement.execute()) {
-                query = "SELECT * FROM Coupons WHERE id = ? AND amount > 0 AND end_date > current_time();";
-                statement = connection.prepareStatement(query);
-                statement.setInt(1, couponID);
-                return (statement.execute());
-            } else
-                return false;
+            if (statement.execute()) {
+                if (!statement.getResultSet().next()) { // No results found, continue
+                    query = "SELECT * FROM Coupons WHERE id = ? AND amount > 0 AND end_date > current_time();";
+                    statement = connection.prepareStatement(query);
+                    statement.setInt(1, couponID);
+                    if (statement.execute()) {
+                        if (statement.getResultSet().next()) {
+                            return false;//no such purchase
+                        } else {
+                            logger.info("checkCouponPurchase {} - Coupons are out of stock ", couponID);
+                            return true;//Coupons are out of stock
+                        }
+                    }
+                } else {
+                    logger.info("checkCouponPurchase {} {} - There is an identical sale ", customerID, couponID);
+                    return true;//There is an identical sale
+                }
+            }
+            logger.info("checkCouponPurchase {} {} - false", customerID, couponID);
+            return false;
         } catch (SQLException | InterruptedException e) {
             logger.error("checkCouponPurchase {}", e.getMessage());
             throw new CouponException(e.getMessage());
@@ -522,4 +537,5 @@ public class CouponsDBDAO implements CouponsDAO {
                 resultSet.getString(10)// String image
         );
     }
+///
 }

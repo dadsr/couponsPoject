@@ -1,6 +1,7 @@
 package FACADE;
 
 import BEANS.*;
+import BEANS.CouponException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,31 +22,30 @@ public class AdminFacade extends ClientFacade {
     }
     @Override
     public int login(String email, String password) {
-        logger.info("login");
+        logger.info("login{}{}", email, password);
         return (Objects.equals(email, "admin@admin.com") && Objects.equals(password, "admin"))?1:0;
     }
     public void addCompany(Company company) throws CompanyException {
-        logger.info("addCompany");
+        logger.info("addCompany{}{}", company.getEmail(), company.getName());
         try {
             if(companiesDbDao.isCompanyExists(company.getEmail(), company.getName()) == 0)
                 companiesDbDao.addCompany(company);
             else {
-                logger.error("addCompany - Company already exists");
+                logger.error("addCompany - Company already exists{}{}", company.getEmail(), company.getName());
                 throw new CompanyException("Company already exists");
             }
         } catch (CompanyException e) {
             logger.error("addCompany {}", e.getMessage());
             throw new CompanyException(e.getMessage());
         }
-
     }
     public void updateCompany(Company company) throws CompanyException {
-        logger.info("updateCompany");
+        logger.info("updateCompany{}", company.getId());
         try {
             if(companiesDbDao.isCompanyExists(company.getId()) > 0 )
                 companiesDbDao.updateCompany(company);
             else {
-                logger.error("updateCompany - Company does not exist");
+                logger.error("updateCompany - Company does not exist{}", company.getId());
                 throw new CompanyException("Company does not exist");
             }
         } catch (CompanyException e) {
@@ -54,7 +54,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public void deleteCompany(int companyID) throws CompanyException {
-        logger.info("deleteCompany");
+        logger.info("deleteCompany{}", companyID);
         try {
             couponsDbDao.deletePurchasesByCompany(companyID);
             couponsDbDao.deleteCouponsByCompany(companyID);
@@ -75,7 +75,7 @@ public class AdminFacade extends ClientFacade {
 
     }
     public Company getOneCompany(int companyID) throws CompanyException {
-        logger.info("getOneCompany1");
+        logger.info("getOneCompany1{}", companyID);
         try {
             return companiesDbDao.getSelectedCompany(companyID);
         } catch (CompanyException e) {
@@ -84,7 +84,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public Company getOneCompany(String email, String password) throws CompanyException {
-        logger.info("getOneCompany2");
+        logger.info("getOneCompany2{}", email);
         try {
             return companiesDbDao.getSelectedCompany(email,password);
         } catch (CompanyException e) {
@@ -93,7 +93,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public void addCustomer(Customer customer) throws CustomerException {
-        logger.info("addCustomer");
+        logger.info("addCustomer{}{}", customer.getFirstName(), customer.getLastName());
         try {
             if(!customersDbDao.isCustomerExists(customer.getEmail()))
                 customersDbDao.addCustomer(customer);
@@ -103,7 +103,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public void updateCustomer(Customer customer) throws CustomerException {
-        logger.info("updateCustomer");
+        logger.info("updateCustomer{}", customer.getId());
         try {
             if(customersDbDao.isCustomerExists(customer.getEmail(),customer.getPassword()) != 0)
                 customersDbDao.updateCustomer(customer);
@@ -113,7 +113,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public void deleteCustomer(int customerID) throws CustomerException {
-        logger.info("deleteCustomer");
+        logger.info("deleteCustomer{}", customerID);
         try {
             couponsDbDao.deletePurchasesByCustomer(customerID);
             customersDbDao.deleteCustomer(customerID);
@@ -133,7 +133,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public Customer getOneCustomer(int customerID) throws CustomerException {
-        logger.info("getOneCustomer1");
+        logger.info("getOneCustomer1{}", customerID);
         try {
             return customersDbDao.getSelectedCustomer(customerID);
         } catch (CustomerException e) {
@@ -142,7 +142,7 @@ public class AdminFacade extends ClientFacade {
         }
     }
     public Customer getOneCustomer(String email, String password) throws CustomerException {
-        logger.info("getOneCustomer2");
+        logger.info("getOneCustomer2{}", email);
         try {
             return customersDbDao.getSelectedCustomer(email,password);
         } catch (CustomerException e) {

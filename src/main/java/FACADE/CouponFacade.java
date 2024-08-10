@@ -5,10 +5,7 @@ import DAO.CouponsDBDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Date;
 import java.sql.SQLException;
-
-import static FACADE.AdminFacade.logger;
 
 public class CouponFacade extends ClientFacade{
     protected static final Logger logger = LogManager.getLogger();
@@ -18,7 +15,7 @@ public class CouponFacade extends ClientFacade{
 
     @Override
     public int login(String email, String password) {
-        logger.info("updateCompany");
+        logger.info("updateCompany{}", email);
         return 1;
     }
 

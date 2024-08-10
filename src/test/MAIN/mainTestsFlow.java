@@ -5,6 +5,8 @@ import FACADE.AdminFacade;
 import FACADE.CompanyFacade;
 import FACADE.CustomerFacade;
 import BEANS.ClientTypeEnum;
+import BEANS.CouponException;
+import PROGRAM.CouponExpirationDailyJob;
 import PROGRAM.LoginManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,18 +21,32 @@ public class mainTestsFlow {
 
         LoginManager login =  LoginManager.getInstance();
         AdminFacade admin;
+
+
         try {
+            System.out.println("-------------------------- Starting Coupon Expiration Daily Job ------------------------------------");
+            CouponExpirationDailyJob expirationJob = new CouponExpirationDailyJob(600L);
+            Thread expirationJobThread = new Thread(expirationJob);
+
+            expirationJobThread.join();
+            expirationJobThread.start();
+
+            System.out.println("-------------------------- Adding new companies ------------------------------------");
             //admin@admin.com & admin
             admin = (AdminFacade) login.login("admin@admin.com","admin", ClientTypeEnum.ADMINISTRATOR);
 
-/*            System.out.println("-------------------------- Adding new companies ------------------------------------");
-            addNewCompanies(admin,20);
+            addNewCompanies(admin,100);
             System.out.println("-------------------------- Adding new coupons for company---------------------------");
-            addNewCoupons4Companies(login,admin,50);
+            addNewCoupons4Companies(login,admin,100);
             System.out.println("-------------------------- Adding new clients --------------------------------------");
-            addNewClients(admin,30);
+            addNewClients(admin,100);
             System.out.println("-------------------------- purchasing coupons --------------------------------------");
-            */purchasingCoupons(login,admin,100);
+            purchasingCoupons(login,admin,20);
+
+            System.out.println("-------------------------- stopping Coupon Expiration Daily Job ------------------------------------");
+            //using my method  to stop run() by using CouponExpirationDailyJob reference
+            expirationJob.stop();
+
             System.out.println("-------------------------- BIG SUCCESS --------------------------------------");
 
 
@@ -38,24 +54,24 @@ public class mainTestsFlow {
             System.out.println(e.getMessage());
         } catch (CustomerException e) {
             throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+
+
     }
-
-
     private static void addNewClients(AdminFacade admin, int numOf) throws CustomerException {
         Random rnd =new Random();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < numOf; i++) {
             admin.addCustomer(new Customer(
-                    "custo" + rnd.nextInt(666),//String firstName
+                    "custo" + rnd.nextInt(666666),//String firstName
                     "mer",//String lastName
-                    rnd.nextInt(666) + "@XXX.com",//String email
+                    rnd.nextInt(666666) + "@XXX.com",//String email
                     String.valueOf(rnd.nextInt(111111,999999999)),//String password
                     null//ArrayList<Coupon> coupons
             ));
         }
     }
-
-
     private static void addNewCompanies(AdminFacade admin, int numOf) {
         Random rnd =new Random();
         Company[] companies =new Company[numOf];
@@ -70,7 +86,7 @@ public class mainTestsFlow {
             try{
                 admin.addCompany(company);
             } catch (CompanyException e) {
-                System.out.println("Adding new companies - FAILED");
+                logger.info("addNewCompanies {} ", e.getMessage());
             }
         }
     }
@@ -101,6 +117,7 @@ public class mainTestsFlow {
                 try{
                     comp.addCoupon(coupon);
                 } catch (CouponException e) {
+                    logger.info("addNewCoupons4Companies {} ", e.getMessage());
                     System.out.println("Adding new companies - FAILED");
                 }
             }
@@ -113,23 +130,27 @@ public class mainTestsFlow {
         ArrayList<Company> cmps4cups = admin.getAllCompanies();
         for (Customer customer : customers) {
             CustomerFacade clintF = (CustomerFacade) login.login(customer.getEmail(),customer.getPassword(), ClientTypeEnum.CUSTOMER);
-            for (int i = 0; i <rnd.nextInt(10) ; i++) {
-                int bound =rnd.nextInt((cmps4cups.size()-1));
+            for (int i = 0; i <rnd.nextInt(numOf) ; i++) {
+                int bound =rnd.nextInt((cmps4cups.size()));
+                //todo remove
+                logger.info("purchasingCoupons cmps4cups {}", bound);
                 ArrayList<Coupon> tempCompCups = cmps4cups.get(bound).getCoupons();
                 bound =tempCompCups.size();
+                logger.info("purchasingCoupons tempCompCups {}", bound);
                 //In case there is a single coupon
                 if(bound > 0) {
-                    bound -= ((bound == 1) ? 0 : 1);
-                    Coupon cup = tempCompCups.get(bound);
+                    //bound -= ((bound == 1) ? 0 : 1);
                     try {
+                        Coupon cup = tempCompCups.get(--bound);
+                        logger.info("adding  {}", cup.getId());
                         clintF.purchaseCoupons(cup);
                     } catch (CustomerException e) {
-                        logger.info("purchaseCoupons" +e.getMessage());
-
+                        logger.info("purchaseCoupons{}", e.getMessage());
                     }
                 }
             }
         }
     }
+    /**/
 }
 
