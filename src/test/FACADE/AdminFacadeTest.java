@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class AdminFacadeTest {
-    int tstId = 2412;//getOneCompany + addCompany
+    int tstId = 3;//getOneCompany + addCompany
+
     //void login()  - tested on LoginManagerTest
 
     @Test

@@ -1,7 +1,6 @@
 package BEANS;
 
 public enum CategoryEnum {
-    // Define your enum constants
     FOOD(1),
     ELECTRONICS(2),
     FASHION(3),
@@ -15,7 +14,17 @@ public enum CategoryEnum {
     public int getId() {
         return id;
     }
-    // Static method to get the enum constant by ID
+    /**
+     * Retrieves the enum constant of {@code CategoryEnum} with the specified ID.
+     * <p>
+     * This static method iterates through all enum constants of {@code CategoryEnum} to find
+     * the one that matches the given ID. If no matching constant is found, an
+     * {@code IllegalArgumentException} is thrown.
+     *
+     * @param id The ID of the enum constant to retrieve.
+     * @return The {@code CategoryEnum} constant with the specified ID.
+     * @throws IllegalArgumentException If no enum constant with the specified ID is found.
+     */
     public static CategoryEnum fromId(int id) {
         for (CategoryEnum category : values()) {
             if (category.getId() == id) {

@@ -29,17 +29,18 @@ public class ConnectionPool {
      * @throws SQLException if a database access error occurs
      */
     private ConnectionPool() throws SQLException {
-        logger.info("ConnectionPool");
+        logger.info("ConnectionPool constructor");
         for (int i = 0; i <MAX_CONNECTIONS ; i++)
             connections.add(DriverManager.getConnection(URL, USER, PASSWORD));
     }
+
     /**
      * Returns the singleton instance of the DAO.ConnectionPool.
      * @return the singleton instance of the DAO.ConnectionPool.
      * @throws SQLException if a database access error occurs.
      */
     public static ConnectionPool getInstance() throws SQLException {
-        logger.info("getInstance");
+        logger.info("getInstance - returns singleton instance ConnectionPool");
         if(instance == null)
             instance = new ConnectionPool();
         return instance;
@@ -51,7 +52,7 @@ public class ConnectionPool {
      * @throws InterruptedException if the current thread is interrupted while waiting.
      */
     public synchronized Connection getConnection() throws InterruptedException {
-        logger.info("getConnection{}", connections.size());
+        logger.info("getConnection -trying to retrieves a connection - connection size:{}", connections.size());
         while (connections.size()==0)
                 wait();
         Connection connection =connections.get(connections.size()-1);
@@ -63,7 +64,7 @@ public class ConnectionPool {
      * @param connection the connection to be restored.
      */
     public synchronized void restoreConnection (Connection connection){
-        logger.info("restoreConnection{}", connections.size());
+        logger.info("restoreConnection - restoring a connection:{}", connections.size());
         connections.add(connection);
         notifyAll();
     }
@@ -72,7 +73,7 @@ public class ConnectionPool {
      * @throws SQLException if a database access error occurs.
      */
     public void closeAllConnections () throws SQLException {
-        logger.info("closeAllConnections");
+        logger.info("closeAllConnections -closes all connections in the pool");
         for (Connection connection : connections) {
             connection.close();
         }

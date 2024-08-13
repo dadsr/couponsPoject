@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 class CompanyFacadeTest {
-    int companyId = 2411;//addCoupon + updateCoupon +testGetCompanyCoupons+testGetCompanyCoupons1+getCompanyDetails
-    int couponId = 457053;//deleteCoupon
+    int companyId = 3;//addCoupon + updateCoupon +testGetCompanyCoupons+testGetCompanyCoupons1+getCompanyDetails
+    int couponId = 20;//deleteCoupon
 
     //   void login()  - tested on LoginManagerTest
 

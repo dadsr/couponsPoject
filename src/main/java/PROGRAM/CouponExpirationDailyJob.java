@@ -12,16 +12,15 @@ public class CouponExpirationDailyJob  implements Runnable {
     private Long sleepingInMillis = 600L;
     private boolean quit =false;
 
-
     public CouponExpirationDailyJob(Long sleepingInMillis) {
         this.sleepingInMillis = sleepingInMillis;
     }
 
-    @Override
-    /*
+    /**
      * Runnable interface's run() method does not allow checked exceptions to be thrown.
      * avoiding this by handling the exception within the run() method
      */
+    @Override
     public void run() {
         logger.info("run started");
         System.out.println("expirationJob started");

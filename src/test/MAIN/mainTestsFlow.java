@@ -132,14 +132,11 @@ public class mainTestsFlow {
             CustomerFacade clintF = (CustomerFacade) login.login(customer.getEmail(),customer.getPassword(), ClientTypeEnum.CUSTOMER);
             for (int i = 0; i <rnd.nextInt(numOf) ; i++) {
                 int bound =rnd.nextInt((cmps4cups.size()));
-                //todo remove
                 logger.info("purchasingCoupons cmps4cups {}", bound);
                 ArrayList<Coupon> tempCompCups = cmps4cups.get(bound).getCoupons();
                 bound =tempCompCups.size();
                 logger.info("purchasingCoupons tempCompCups {}", bound);
-                //In case there is a single coupon
                 if(bound > 0) {
-                    //bound -= ((bound == 1) ? 0 : 1);
                     try {
                         Coupon cup = tempCompCups.get(--bound);
                         logger.info("adding  {}", cup.getId());
