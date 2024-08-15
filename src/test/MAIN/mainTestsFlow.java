@@ -43,11 +43,115 @@ public class mainTestsFlow {
             System.out.println("-------------------------- purchasing coupons --------------------------------------");
             purchasingCoupons(login,admin,20);
 
+
+
             System.out.println("-------------------------- stopping Coupon Expiration Daily Job ------------------------------------");
             //using my method  to stop run() by using CouponExpirationDailyJob reference
             expirationJob.stop();
 
             System.out.println("-------------------------- BIG SUCCESS --------------------------------------");
+
+            System.out.println("-------------------------- ADMIN FACADE --------------------------------------");
+
+            //updateCompany + getOneCompany
+            Company meinComp = admin.getOneCompany(1);
+            meinComp.setEmail("meinComp@Juice.com");
+            meinComp.setPassword("killAllJuice");
+            admin.updateCompany(meinComp);
+            if(meinComp.compare(meinComp,admin.getOneCompany("meinComp@Juice.com","killAllJuice")) == 0)
+                System.out.println("updateCompany + getOneCompany - OK");
+            else
+                System.out.println("updateCompany + getOneCompany - FAILURE ");
+
+            //deleteCompany
+            int compId =admin.getOneCompany("meinComp@Juice.com","killAllJuice").getId();
+            admin.deleteCompany(compId);
+            try {
+                admin.getOneCompany(compId);
+                System.out.println("deleteCompany - FAILURE");
+            }catch (CompanyException e) {
+                System.out.println("deleteCompany - OK");
+            }
+
+            //updateCustomer + getOneCustomer
+            Customer mcLovin  = admin.getOneCustomer(1);
+            mcLovin.setEmail("mcLovin@superbad.com");
+            mcLovin.setPassword("mcLovinMcLovin");
+            admin.updateCustomer(mcLovin);
+            if(mcLovin.compare(mcLovin,admin.getOneCustomer("mcLovin@superbad.com","mcLovinMcLovin")) == 0)
+                System.out.println("updateCustomer + getOneCustomer - OK");
+            else
+                System.out.println("updateCustomer + getOneCustomer - FAILURE ");
+            //deleteCustomer
+            int custId = admin.getOneCustomer("mcLovin@superbad.com","mcLovinMcLovin").getId();
+            admin.deleteCustomer(custId);
+            try {
+                admin.getOneCustomer(compId);
+                System.out.println("deleteCustomer - FAILURE");
+            }catch (CustomerException e) {
+                System.out.println("deleteCustomer - OK");
+            }
+
+            System.out.println("-------------------------- COMPANY FACADE --------------------------------------");
+
+            Company company= admin.getOneCompany(2);
+            CompanyFacade companyFacade = (CompanyFacade) login.login(company.getEmail(),company.getPassword() ,ClientTypeEnum.COMPANY);
+            //updateCoupon + getCompanyCoupons
+            ArrayList<Coupon> coupons = companyFacade.getCompanyCoupons();
+            Coupon coupon = coupons.get(1);
+            coupon.setDescription("DescriptionDescriptionDescriptionDescription");
+            coupon.setCategory(CategoryEnum.ELECTRONICS);
+            coupon.setEndDate( RandomGenerators.dateGenerator("2029-01-01","2029-12-31"));
+            try {
+                companyFacade.updateCoupon(coupon);
+                coupons = companyFacade.getCompanyCoupons();
+                for (Coupon coupon1 : coupons) {
+                    if (coupon.getId() == coupon1.getId()) {
+                        if (coupon.compare(coupon, coupon1) == 0) {
+                            System.out.println("updateCoupon + getCompanyCoupons - OK");
+                            break;
+                        }
+                        System.out.println("updateCoupon + getCompanyCoupons - FAILURE ");
+                    }
+                }
+            } catch (CouponException|CompanyException e) {
+                System.out.println("updateCoupon + getCompanyCoupons - FAILURE ");
+            }
+
+            //deleteCoupon
+            try {
+                companyFacade.deleteCoupon(coupon.getId());
+                coupons = companyFacade.getCompanyCoupons();
+                int i = 0;
+                for (; i < coupons.size(); i++)
+                    if(coupon.getId()==coupons.get(i).getId())
+                        break;
+                System.out.println("deleteCoupon - " + ((i == coupons.size()-1)?"OK":"FAILURE"));
+            }catch (CouponException e) {
+                System.out.println("deleteCoupon - FAILURE");
+            }
+            //getCompanyDetails
+            company = companyFacade.getCompanyDetails();
+            System.out.println("getCompanyDetails - " + ((companyFacade.getCompanyID()==company.getId())?"OK":"FAILURE"));
+
+            System.out.println("-------------------------- CUSTOMER FACADE --------------------------------------");
+            Customer customer =admin.getOneCustomer(6);
+            CustomerFacade customerFacade = (CustomerFacade) login.login(customer.getEmail(),customer.getPassword() ,ClientTypeEnum.CUSTOMER);
+            //getCustomerID
+            System.out.println("getCustomerID - " + ((customerFacade.getCustomerID() == customer.getId())?"OK":"FAILURE"));
+            //getCustomerCoupons
+            ArrayList<Coupon> custMaxCoups= customerFacade.getCustomerCoupons(10.0);
+            int i = 0;
+            for (; i <custMaxCoups.size() ; i++)
+                if(custMaxCoups.get(i).getPrice()>10.0)
+                    break;
+            System.out.println("getCustomerCoupons by Max Price - " + ((i == custMaxCoups.size()-1)?"OK":"FAILURE"));
+            ArrayList<Coupon> custCategoryCoups= customerFacade.getCustomerCoupons(CategoryEnum.ELECTRONICS);
+            for (; i <custCategoryCoups.size() ; i++)
+                if(!CategoryEnum.ELECTRONICS.equals(custCategoryCoups.get(i).getCategory()))
+                    break;
+            System.out.println("getCustomerCoupons by Category - " + ((i == custCategoryCoups.size()-1)?"OK":"FAILURE"));
+            //getCustomerDetails
 
 
         } catch (LoginException | CompanyException  e) {

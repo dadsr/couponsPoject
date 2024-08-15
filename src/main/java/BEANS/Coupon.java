@@ -1,8 +1,11 @@
 package BEANS;
 
-import java.sql.Date;
+import org.apache.logging.log4j.util.PropertySource;
 
-public class Coupon {
+import java.sql.Date;
+import java.util.Comparator;
+
+public class Coupon implements Comparator<Coupon> {
     private int id;
     private int companyId;
     private CategoryEnum category;
@@ -111,5 +114,13 @@ public class Coupon {
                 ", price=" + price +
                 ", image='" + image + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compare(Coupon o1, Coupon o2) {
+        return (o1.getId() == o2.getId() &&
+                o1.getTitle().equals(o2.getTitle()) &&
+                o1.getDescription().equals(o2.getDescription()) &&
+                o1.getEndDate().equals(getEndDate()))?1:0;
     }
 }

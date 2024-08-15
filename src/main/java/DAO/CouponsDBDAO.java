@@ -768,12 +768,12 @@ public class CouponsDBDAO implements CouponsDAO {
                         if (statement.getResultSet().next()) {
                             return false;//no such purchase
                         } else {
-                            logger.info("checkCouponPurchase {} - Coupon id:{} is out of stock or expired", couponID);
+                            logger.info("checkCouponPurchase - Coupon id:{} is out of stock or expired", couponID);
                             return true;//Coupons are out of stock
                         }
                     }
                 } else {
-                    logger.info("checkCouponPurchase {} {} - There is an identical purchase for customer id:{} and coupon id:{} ", customerID, couponID);
+                    logger.info("checkCouponPurchase - There is an identical purchase for customer id:{} and coupon id:{} ", customerID, couponID);
                     return true;//There is an identical sale
                 }
             }

@@ -1,8 +1,9 @@
 package BEANS;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Company {
+public class Company implements Comparator<Company> {
     private int id;
     private String name;
     private String email;
@@ -55,5 +56,12 @@ public class Company {
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
                 '}';
+    }
+
+    @Override
+    public int compare(Company o1, Company o2) {
+        return (o1.getId() == o2.getId() &&
+                o1.getEmail().equals(o2.getEmail()) &&
+                o1.getPassword().equals(o2.getPassword()))?1:0;
     }
 }
