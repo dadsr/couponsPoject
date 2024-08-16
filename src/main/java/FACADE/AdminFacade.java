@@ -238,7 +238,7 @@ public class AdminFacade extends ClientFacade {
     public void updateCustomer(Customer customer) throws CustomerException {
         logger.info("updateCustomer - trying to update customer - customer id:{}", customer.getId());
         try {
-            if(customersDbDao.isCustomerExists(customer.getEmail(),customer.getPassword()) != 0)
+            if(customersDbDao.isCustomerExists(customer.getId()))
                 customersDbDao.updateCustomer(customer);
         } catch (CustomerException e) {
             logger.error("updateCustomer threw exception - {}", e.getMessage());

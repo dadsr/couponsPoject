@@ -24,47 +24,69 @@ public class mainTestsFlow {
 
 
         try {
-            System.out.println("-------------------------- Starting Coupon Expiration Daily Job ------------------------------------");
+           System.out.println("-------------------------- Starting Coupon Expiration Daily Job ------------------------------------");
             CouponExpirationDailyJob expirationJob = new CouponExpirationDailyJob(600L);
             Thread expirationJobThread = new Thread(expirationJob);
 
             expirationJobThread.join();
             expirationJobThread.start();
 
-           System.out.println("-------------------------- Adding new companies ------------------------------------");
+
+
+
+            System.out.println(" ██████╗ ███████╗███╗   ██╗███████╗██████╗  █████╗ ████████╗██╗███╗   ██╗ ██████╗     ██████╗  █████╗ ████████╗ █████╗ \n" +
+                    "██╔════╝ ██╔════╝████╗  ██║██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██║████╗  ██║██╔════╝     ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗\n" +
+                    "██║  ███╗█████╗  ██╔██╗ ██║█████╗  ██████╔╝███████║   ██║   ██║██╔██╗ ██║██║  ███╗    ██║  ██║███████║   ██║   ███████║\n" +
+                    "██║   ██║██╔══╝  ██║╚██╗██║██╔══╝  ██╔══██╗██╔══██║   ██║   ██║██║╚██╗██║██║   ██║    ██║  ██║██╔══██║   ██║   ██╔══██║\n" +
+                    "╚██████╔╝███████╗██║ ╚████║███████╗██║  ██║██║  ██║   ██║   ██║██║ ╚████║╚██████╔╝    ██████╔╝██║  ██║   ██║   ██║  ██║\n" +
+                    " ╚═════╝ ╚══════╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝\n" +
+                    "    ███████╗ ██████╗ ██████╗     ████████╗███████╗███████╗████████╗██╗███╗   ██╗ ██████╗                               \n" +
+                    "    ██╔════╝██╔═══██╗██╔══██╗    ╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝██║████╗  ██║██╔════╝                               \n" +
+                    "    █████╗  ██║   ██║██████╔╝       ██║   █████╗  ███████╗   ██║   ██║██╔██╗ ██║██║  ███╗                              \n" +
+                    "    ██╔══╝  ██║   ██║██╔══██╗       ██║   ██╔══╝  ╚════██║   ██║   ██║██║╚██╗██║██║   ██║                              \n" +
+                    "    ██║     ╚██████╔╝██║  ██║       ██║   ███████╗███████║   ██║   ██║██║ ╚████║╚██████╔╝                              \n" +
+                    "    ╚═╝      ╚═════╝ ╚═╝  ╚═╝       ╚═╝   ╚══════╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝                               ");
+
+           System.out.println("--------------------------1. Adding new companies ------------------------------------");
             //admin@admin.com & admin
             admin = (AdminFacade) login.login("admin@admin.com","admin", ClientTypeEnum.ADMINISTRATOR);
 
             addNewCompanies(admin,20);
-            System.out.println("-------------------------- Adding new coupons for company---------------------------");
+            System.out.println("--------------------------2. Adding new coupons for company---------------------------");
             addNewCoupons4Companies(login,admin,20);
-            System.out.println("-------------------------- Adding new clients --------------------------------------");
+            System.out.println("--------------------------3. Adding new clients --------------------------------------");
             addNewClients(admin,20);
-            System.out.println("-------------------------- purchasing coupons --------------------------------------");
+            System.out.println("--------------------------4. purchasing coupons --------------------------------------");
             purchasingCoupons(login,admin,20);
 
 
+            System.out.println("███████╗██╗   ██╗ ██████╗ ██████╗███████╗███████╗███████╗\n" +
+                    "██╔════╝██║   ██║██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝\n" +
+                    "███████╗██║   ██║██║     ██║     █████╗  ███████╗███████╗\n" +
+                    "╚════██║██║   ██║██║     ██║     ██╔══╝  ╚════██║╚════██║\n" +
+                    "███████║╚██████╔╝╚██████╗╚██████╗███████╗███████║███████║\n" +
+                    "╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝╚══════╝╚══════╝╚══════╝");
 
-            System.out.println("-------------------------- stopping Coupon Expiration Daily Job ------------------------------------");
-            //using my method  to stop run() by using CouponExpirationDailyJob reference
-            expirationJob.stop();
+            System.out.println("--------------------------5. ADMIN FACADE --------------------------------------");
+          int testCompany1 = 1,testCompany2 = 2 ,testCustomer1 =1,testCustomer2 =2;
 
-            System.out.println("-------------------------- BIG SUCCESS --------------------------------------");
-
-            System.out.println("-------------------------- ADMIN FACADE --------------------------------------");
 
             //updateCompany + getOneCompany
-            Company meinComp = admin.getOneCompany(1);
+            System.out.println("using admin getOneCompany");
+
+            Company meinComp = admin.getOneCompany(testCompany1);
             meinComp.setEmail("meinComp@Juice.com");
             meinComp.setPassword("killAllJuice");
+            System.out.println("using admin updateCompany");
             admin.updateCompany(meinComp);
-            if(meinComp.compare(meinComp,admin.getOneCompany("meinComp@Juice.com","killAllJuice")) == 0)
+            if(meinComp.compare(meinComp,admin.getOneCompany("meinComp@Juice.com","killAllJuice")) == 1)
                 System.out.println("updateCompany + getOneCompany - OK");
             else
                 System.out.println("updateCompany + getOneCompany - FAILURE ");
 
             //deleteCompany
             int compId =admin.getOneCompany("meinComp@Juice.com","killAllJuice").getId();
+            System.out.println("using admin deleteCompany");
             admin.deleteCompany(compId);
             try {
                 admin.getOneCompany(compId);
@@ -74,16 +96,19 @@ public class mainTestsFlow {
             }
 
             //updateCustomer + getOneCustomer
-            Customer mcLovin  = admin.getOneCustomer(1);
+            System.out.println("using admin getOneCustomer");
+            Customer mcLovin  = admin.getOneCustomer(testCustomer1);
             mcLovin.setEmail("mcLovin@superbad.com");
             mcLovin.setPassword("mcLovinMcLovin");
+            System.out.println("using admin updateCustomer");
             admin.updateCustomer(mcLovin);
-            if(mcLovin.compare(mcLovin,admin.getOneCustomer("mcLovin@superbad.com","mcLovinMcLovin")) == 0)
+            if(mcLovin.compare(mcLovin,admin.getOneCustomer("mcLovin@superbad.com","mcLovinMcLovin")) == 1)
                 System.out.println("updateCustomer + getOneCustomer - OK");
             else
                 System.out.println("updateCustomer + getOneCustomer - FAILURE ");
             //deleteCustomer
             int custId = admin.getOneCustomer("mcLovin@superbad.com","mcLovinMcLovin").getId();
+            System.out.println("using admin deleteCustomer");
             admin.deleteCustomer(custId);
             try {
                 admin.getOneCustomer(compId);
@@ -92,22 +117,24 @@ public class mainTestsFlow {
                 System.out.println("deleteCustomer - OK");
             }
 
-            System.out.println("-------------------------- COMPANY FACADE --------------------------------------");
+            System.out.println("--------------------------6. COMPANY FACADE --------------------------------------");
 
-            Company company= admin.getOneCompany(2);
+            Company company= admin.getOneCompany(testCompany2);
             CompanyFacade companyFacade = (CompanyFacade) login.login(company.getEmail(),company.getPassword() ,ClientTypeEnum.COMPANY);
             //updateCoupon + getCompanyCoupons
+            System.out.println("using company getCompanyCoupons");
             ArrayList<Coupon> coupons = companyFacade.getCompanyCoupons();
             Coupon coupon = coupons.get(1);
             coupon.setDescription("DescriptionDescriptionDescriptionDescription");
             coupon.setCategory(CategoryEnum.ELECTRONICS);
             coupon.setEndDate( RandomGenerators.dateGenerator("2029-01-01","2029-12-31"));
             try {
+                System.out.println("using company updateCoupon");
                 companyFacade.updateCoupon(coupon);
                 coupons = companyFacade.getCompanyCoupons();
                 for (Coupon coupon1 : coupons) {
                     if (coupon.getId() == coupon1.getId()) {
-                        if (coupon.compare(coupon, coupon1) == 0) {
+                        if (coupon.compare(coupon, coupon1) == 1) {
                             System.out.println("updateCoupon + getCompanyCoupons - OK");
                             break;
                         }
@@ -120,39 +147,70 @@ public class mainTestsFlow {
 
             //deleteCoupon
             try {
+                System.out.println("using company deleteCoupon");
                 companyFacade.deleteCoupon(coupon.getId());
                 coupons = companyFacade.getCompanyCoupons();
                 int i = 0;
                 for (; i < coupons.size(); i++)
                     if(coupon.getId()==coupons.get(i).getId())
                         break;
-                System.out.println("deleteCoupon - " + ((i == coupons.size()-1)?"OK":"FAILURE"));
+                System.out.println("deleteCoupon - " + ((i == coupons.size())?"OK":"FAILURE"));
             }catch (CouponException e) {
                 System.out.println("deleteCoupon - FAILURE");
             }
             //getCompanyDetails
+            System.out.println("using company getCompanyDetails");
             company = companyFacade.getCompanyDetails();
             System.out.println("getCompanyDetails - " + ((companyFacade.getCompanyID()==company.getId())?"OK":"FAILURE"));
 
-            System.out.println("-------------------------- CUSTOMER FACADE --------------------------------------");
-            Customer customer =admin.getOneCustomer(6);
+            System.out.println("--------------------------7. CUSTOMER FACADE --------------------------------------");
+            Customer customer =admin.getOneCustomer(testCustomer2);
             CustomerFacade customerFacade = (CustomerFacade) login.login(customer.getEmail(),customer.getPassword() ,ClientTypeEnum.CUSTOMER);
             //getCustomerID
+            System.out.println("using customer getCustomerID");
             System.out.println("getCustomerID - " + ((customerFacade.getCustomerID() == customer.getId())?"OK":"FAILURE"));
-            //getCustomerCoupons
+            //getCustomerCoupons by max price
+            company = companyFacade.getCompanyDetails();
+            coupons = company.getCoupons();
+            for (int i = 0; i <5 ; i++) {
+                coupons.add(addCouponByPriceAndCategory(company.getId(),10.0 +i,CategoryEnum.FASHION));
+            }
+            company.setCoupons(coupons);
+            System.out.println("using customer getCustomerCoupons by Max Price");
             ArrayList<Coupon> custMaxCoups= customerFacade.getCustomerCoupons(10.0);
             int i = 0;
-            for (; i <custMaxCoups.size() ; i++)
+            for (i = 0; i <custMaxCoups.size() ; i++)
                 if(custMaxCoups.get(i).getPrice()>10.0)
                     break;
-            System.out.println("getCustomerCoupons by Max Price - " + ((i == custMaxCoups.size()-1)?"OK":"FAILURE"));
+            System.out.println("getCustomerCoupons by Max Price - " + ((i == custMaxCoups.size())?"OK":"FAILURE"));
+            //getCustomerCoupons by category
+            for (int j = 0; j < 5 ; j++) {
+                coupons.add(addCouponByPriceAndCategory(company.getId(),0.0,CategoryEnum.ELECTRONICS));
+            }
+            company.setCoupons(coupons);
+            System.out.println("using customer getCustomerCoupons by Category");
             ArrayList<Coupon> custCategoryCoups= customerFacade.getCustomerCoupons(CategoryEnum.ELECTRONICS);
-            for (; i <custCategoryCoups.size() ; i++)
+
+            for (i = 0; i <custCategoryCoups.size() ; i++)
                 if(!CategoryEnum.ELECTRONICS.equals(custCategoryCoups.get(i).getCategory()))
                     break;
-            System.out.println("getCustomerCoupons by Category - " + ((i == custCategoryCoups.size()-1)?"OK":"FAILURE"));
+            System.out.println("getCustomerCoupons by Category - " + ((i == custCategoryCoups.size())?"OK":"FAILURE"));
             //getCustomerDetails
+            customer = customerFacade.getCustomerDetails();
+            System.out.println("getCustomerDetails - " + ((customerFacade.getCustomerID() == customer.getId())?"OK":"FAILURE"));
+            System.out.println("-----------------------------------------------------------------------------------");
 
+            System.out.println("--------------------------8. stopping Coupon Expiration Daily Job ------------------------------------");
+            //using my method  to stop run() by using CouponExpirationDailyJob reference
+            expirationJob.stop();
+
+
+            System.out.println("██████╗ ███████╗██████╗ ███████╗███████╗ ██████╗████████╗    ██████╗ ██████╗  ██████╗      ██╗███████╗ ██████╗████████╗\n" +
+                    "██╔══██╗██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝╚══██╔══╝    ██╔══██╗██╔══██╗██╔═══██╗     ██║██╔════╝██╔════╝╚══██╔══╝\n" +
+                    "██████╔╝█████╗  ██████╔╝█████╗  █████╗  ██║        ██║       ██████╔╝██████╔╝██║   ██║     ██║█████╗  ██║        ██║   \n" +
+                    "██╔═══╝ ██╔══╝  ██╔══██╗██╔══╝  ██╔══╝  ██║        ██║       ██╔═══╝ ██╔══██╗██║   ██║██   ██║██╔══╝  ██║        ██║   \n" +
+                    "██║     ███████╗██║  ██║██║     ███████╗╚██████╗   ██║       ██║     ██║  ██║╚██████╔╝╚█████╔╝███████╗╚██████╗   ██║   \n" +
+                    "╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝ ╚═════╝   ╚═╝       ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚════╝ ╚══════╝ ╚═════╝   ╚═╝   ");
 
         } catch (LoginException | CompanyException  e) {
             System.out.println(e.getMessage());
@@ -164,6 +222,9 @@ public class mainTestsFlow {
 
 
     }
+
+
+
     private static void addNewClients(AdminFacade admin, int numOf) throws CustomerException {
         Random rnd =new Random();
         for (int i = 0; i < numOf; i++) {
@@ -228,6 +289,22 @@ public class mainTestsFlow {
         }
 
     }
+
+    private static Coupon addCouponByPriceAndCategory(int companyId,double price, CategoryEnum categoryEnum) {
+        Random rnd =new Random();
+        return new Coupon(
+                companyId,//int companyId
+                CategoryEnum.fromId(categoryEnum.getId()),// CategoryEnum category
+                "coupon " + price,// String title
+                "all coupons are the same",// String description
+                RandomGenerators.dateGenerator("2024-08-06","2024-12-31"),// Date startDate
+                RandomGenerators.dateGenerator("2025-08-06","2026-12-31"),// Date endDate
+                rnd.nextInt(1,100),// int amount
+                price,// Double price
+                null// String image
+        );
+    }
+
     private static void purchasingCoupons(LoginManager login,AdminFacade admin, int numOf) throws LoginException, CompanyException, CustomerException {
         Random rnd =new Random();
         ArrayList<Customer> customers = admin.getAllCustomers();

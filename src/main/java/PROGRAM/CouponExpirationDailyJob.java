@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class CouponExpirationDailyJob  implements Runnable {
     protected static final Logger logger = LogManager.getLogger();
-    private Long sleepingInMillis = 600L;
+    private Long sleepingInMillis = 6000000000L;
     private boolean quit =false;
 
     public CouponExpirationDailyJob(Long sleepingInMillis) {
@@ -23,7 +23,7 @@ public class CouponExpirationDailyJob  implements Runnable {
     @Override
     public void run() {
         logger.info("run started");
-        System.out.println("expirationJob started");
+        System.out.println("========================================= expirationJob started =========================================");
         while (!quit) {
             try {
                 new CouponFacade().deleteExpiredCoupons();
@@ -46,7 +46,7 @@ public class CouponExpirationDailyJob  implements Runnable {
     public void stop (){
         logger.info("stop");
         this.quit =true;
-        System.out.println("expirationJob stoped");
+        System.out.println("========================================= expirationJob stoped =========================================");
     }
 /////
 }

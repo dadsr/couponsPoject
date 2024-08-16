@@ -267,13 +267,39 @@ public class CustomersDBDAO implements CustomersDAO {
      * @throws CustomerException If an error occurs while accessing the database.
      */
     public boolean isCustomerExists(String email) throws CustomerException {
-        logger.info("isCustomerExists - Checks if a customer exists with the email:{}", email);
+        logger.info("isCustomerExists - Checks if a customer exists with the email: {}", email);
         Connection connection =null;
         try {
             connection = connectionPool.getConnection();
             String query ="SELECT * FROM customers WHERE email =?;";
             PreparedStatement statement =connection.prepareStatement(query);
             statement.setString(1,email);
+            ResultSet resultSet =statement.executeQuery();
+            return (resultSet.next());
+        } catch (InterruptedException | SQLException e) {
+            logger.error("isCustomerExists threw exception {}", e.getMessage());
+            throw new CustomerException(e.getMessage());
+        }finally {
+            if (connection != null)
+                connectionPool.restoreConnection(connection);
+        }
+    }
+    /**
+     * Checks if a customer with the specified email address exists in the database.
+     * <p>
+     * Checks if a customer exists in the database by their ID.
+     * @param customerID The ID of the customer to check.
+     * @return `true` if a customer with the specified email exists, otherwise `false`.
+     * @throws CustomerException If an error occurs while accessing the database.
+     */
+    public boolean isCustomerExists(int customerID) throws CustomerException {
+        logger.info("isCustomerExists - Checks if a customer exists by id: {}", customerID);
+        Connection connection =null;
+        try {
+            connection = connectionPool.getConnection();
+            String query ="SELECT * FROM customers WHERE id =?;";
+            PreparedStatement statement =connection.prepareStatement(query);
+            statement.setInt(1,customerID);
             ResultSet resultSet =statement.executeQuery();
             return (resultSet.next());
         } catch (InterruptedException | SQLException e) {

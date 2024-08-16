@@ -267,7 +267,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
      */
     @Override
     public Company getSelectedCompany(int companyID) throws CompanyException {
-        logger.info("getSelectedCompany - trying to get company by company id:{}", companyID);
+        logger.info("getSelectedCompany - trying to get company by company id: {}", companyID);
         Connection connection = null;
         try {
             connection = connectionPool.getConnection();
