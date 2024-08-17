@@ -1,6 +1,7 @@
 package MAIN;
 
 import BEANS.*;
+import DAO.DbCleaner;
 import FACADE.AdminFacade;
 import FACADE.CompanyFacade;
 import FACADE.CustomerFacade;
@@ -23,15 +24,15 @@ public class mainTestsFlow {
         AdminFacade admin;
 
 
+
         try {
-           System.out.println("-------------------------- Starting Coupon Expiration Daily Job ------------------------------------");
+            DataDbCleaner();
+            System.out.println("-------------------------- Starting Coupon Expiration Daily Job ------------------------------------");
             CouponExpirationDailyJob expirationJob = new CouponExpirationDailyJob(600L);
             Thread expirationJobThread = new Thread(expirationJob);
 
             expirationJobThread.join();
             expirationJobThread.start();
-
-
 
 
             System.out.println(" ██████╗ ███████╗███╗   ██╗███████╗██████╗  █████╗ ████████╗██╗███╗   ██╗ ██████╗     ██████╗  █████╗ ████████╗ █████╗ \n" +
@@ -47,7 +48,7 @@ public class mainTestsFlow {
                     "    ██║     ╚██████╔╝██║  ██║       ██║   ███████╗███████║   ██║   ██║██║ ╚████║╚██████╔╝                              \n" +
                     "    ╚═╝      ╚═════╝ ╚═╝  ╚═╝       ╚═╝   ╚══════╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝                               ");
 
-           System.out.println("--------------------------1. Adding new companies ------------------------------------");
+            System.out.println("--------------------------1. Adding new companies ------------------------------------");
             //admin@admin.com & admin
             admin = (AdminFacade) login.login("admin@admin.com","admin", ClientTypeEnum.ADMINISTRATOR);
 
@@ -68,7 +69,7 @@ public class mainTestsFlow {
                     "╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝╚══════╝╚══════╝╚══════╝");
 
             System.out.println("--------------------------5. ADMIN FACADE --------------------------------------");
-          int testCompany1 = 1,testCompany2 = 2 ,testCustomer1 =1,testCustomer2 =2;
+            int testCompany1 = 1,testCompany2 = 2 ,testCustomer1 =1,testCustomer2 =2;
 
 
             //updateCompany + getOneCompany
@@ -223,6 +224,9 @@ public class mainTestsFlow {
 
     }
 
+    private static void DataDbCleaner() {
+        new DbCleaner();
+    }
 
 
     private static void addNewClients(AdminFacade admin, int numOf) throws CustomerException {
